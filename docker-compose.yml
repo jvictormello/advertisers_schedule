@@ -7,8 +7,8 @@ services:
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
+        container_name: 'cate-app'
         image: sail-8.0/app
-        container_name: cate-app
         ports:
             - '${APP_PORT:-80}:80'
         environment:
@@ -21,10 +21,10 @@ services:
         depends_on:
             - database
     database:
-        image: 'mysql:8.0'
+        image: 'mariadb:10'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
-        container_name: cate-database
+        container_name: 'cate-database'
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_DATABASE: '${DB_DATABASE}'
@@ -32,7 +32,7 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
-            - 'sailmysql:/var/lib/mysql'
+            - 'sailmariadb:/var/lib/mysql'
         networks:
             - sail
         healthcheck:
@@ -43,5 +43,5 @@ networks:
     sail:
         driver: bridge
 volumes:
-    sailmysql:
+    sailmariadb:
         driver: local
