@@ -1,39 +1,58 @@
-# For more information: https://laravel.com/docs/sail
+# For more information: https://laravel.com/docs/cate
 version: '3'
 services:
-    app:
-        container_name: 'cate-app'
-        image: jamirperoba/image-base-php8
-        ports:
-            - '80:80'
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on:
-            - database
-    database:
-        image: 'mariadb:10'
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
-        container_name: 'cate-database'
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        volumes:
-            - 'sailmariadb:/var/lib/mysql'
-        networks:
-            - sail
-        healthcheck:
-          test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-          retries: 3
-          timeout: 5s
+
+  fm-webserver:
+    image: fm-webserver:latest
+    container_name: fm-webserver
+    hostname: fm-webserver
+    build:
+      context: ./.docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    networks:
+      - cate
+    depends_on:
+      - database
+
+  cate-app:
+    container_name: cate-app
+    hostname: cate-app
+    image: fm-cate:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # volumes:
+    #   - .:/var/www
+    networks:
+      - cate
+    depends_on:
+      - database
+
+  database:
+    image: 'mariadb:10'
+    ports:
+      - '3306:3306'
+    container_name: 'cate-database'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'cate_db'
+      MYSQL_USER: 'cate'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'catemariadb:/var/lib/mysql'
+    networks:
+      - cate
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-proot"]
+      retries: 3
+      timeout: 5s
+
 networks:
-    sail:
-        driver: bridge
+  cate:
+    driver: bridge
 volumes:
-    sailmariadb:
-        driver: local
+  catemariadb:
+      driver: local
