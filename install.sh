@@ -4,7 +4,7 @@ PROJECT="cate-app"
 color='\033[1;36m'
 
 echo  "${color}++++++++ Iniciando instalação ++++++++++++++++"
-docker docker-compose up -d
+docker-compose up -d
 docker exec -it ${PROJECT} composer install
 docker exec -it ${PROJECT} npm install
 docker exec -it ${PROJECT} npm run dev
