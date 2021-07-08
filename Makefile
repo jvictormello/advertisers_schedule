@@ -5,7 +5,21 @@ help:
 
 .DEFAULT_GOAL := help
 
+build_frontend: ## Install all dependecies frontend
+	@docker-compose up -d
+	@docker-compose exec cate-app npm install
+	@docker-compose exec cate-app npm run prod
+
+build_backend: ## Install all dependecies backend
+	@docker-compose up -d
+	@docker-compose exec cate-app composer install
+
 start: ## Start containers
 	@docker-compose up -d --build
+	@docker-compose exec cate-app ln -sf .env.example .env
+	@docker-compose exec cate-app npm install
+	@docker-compose exec cate-app npm run prod
+	@docker-compose exec cate-app composer install
+
 retart: ## Retart containers
 	@docker-compose up -d --build --force-recreate

@@ -9,6 +9,8 @@ services:
     build:
       context: ./.docker/nginx
       dockerfile: Dockerfile
+    volumes:
+      - ./public:/var/www/public
     ports:
       - 8080:80
     networks:
@@ -19,12 +21,9 @@ services:
   cate-app:
     container_name: cate-app
     hostname: cate-app
-    image: fm-cate:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    # volumes:
-    #   - .:/var/www
+    image: atlastechnologiesteam/cate_base:latest
+    volumes:
+      - .:/var/www
     networks:
       - cate
     depends_on:
