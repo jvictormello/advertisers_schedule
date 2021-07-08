@@ -1,7 +1,6 @@
 # For more information: https://laravel.com/docs/cate
-version: '3'
+version: "3"
 services:
-
   fm-webserver:
     image: fm-webserver:latest
     container_name: fm-webserver
@@ -21,7 +20,10 @@ services:
   cate-app:
     container_name: cate-app
     hostname: cate-app
-    image: atlastechnologiesteam/cate_base:latest
+    build:
+      context: .
+      args:
+        - newuser=$USER
     volumes:
       - .:/var/www
     networks:
@@ -30,18 +32,18 @@ services:
       - database
 
   database:
-    image: 'mariadb:10'
+    image: "mariadb:10"
     ports:
-      - '3306:3306'
-    container_name: 'cate-database'
+      - "3306:3306"
+    container_name: "cate-database"
     environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_DATABASE: 'cate_db'
-      MYSQL_USER: 'cate'
-      MYSQL_PASSWORD: 'root'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "cate_db"
+      MYSQL_USER: "cate"
+      MYSQL_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
-      - 'catemariadb:/var/lib/mysql'
+      - "catemariadb:/var/lib/mysql"
     networks:
       - cate
     healthcheck:
@@ -54,4 +56,4 @@ networks:
     driver: bridge
 volumes:
   catemariadb:
-      driver: local
+    driver: local
