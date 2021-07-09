@@ -23,7 +23,7 @@ services:
     build:
       context: .
       args:
-        - newuser=$USER
+        - user=$USER
     volumes:
       - .:/var/www
     networks:
