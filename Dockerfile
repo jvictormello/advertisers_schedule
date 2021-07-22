@@ -1,4 +1,4 @@
-FROM atlastechnologiesteam/cate_base:test as fm-cate
+FROM atlastechnologiesteam/cate_base:7.3 as fm-cate
 ARG user
 
 RUN if [ $user != 'root' ]; then \

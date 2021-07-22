@@ -20,6 +20,7 @@ start: ## Start containers
 	@docker-compose exec cate-app npm install
 	@docker-compose exec cate-app npm run prod
 	@docker-compose exec cate-app composer install
+	@docker-compose exec cate-app php artisan migrate
 
 retart: ## Retart containers
 	@docker-compose up -d --build --force-recreate
