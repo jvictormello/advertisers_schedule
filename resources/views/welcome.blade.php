@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
 
                 <div class="fm-cate">
-                  Olá amiguinhos
+                  Olá Turma
                 </div>
     </div>
 </div>
