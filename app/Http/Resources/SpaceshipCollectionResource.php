@@ -17,12 +17,13 @@ class SpaceshipCollectionResource extends ResourceCollection
         return [
             'data' => $this->collection->transform(function($spaceship){
                 return [
-                    'id'          => $spaceship->id,
-                    'name'        => $spaceship->name,
-                    'description' => $spaceship->description,
-                    'capacity'    => $spaceship->capacity,
-                    'created_at'  => $spaceship->created_at,
-                    'updated_at'  => $spaceship->updated_at
+                    'id'            => $spaceship->id,
+                    'name'          => $spaceship->name,
+                    'description'   => $spaceship->description,
+                    'capacity'      => $spaceship->capacity,
+                    'info_from_api' => $spaceship->info_from_api,
+                    'created_at'    => $spaceship->created_at,
+                    'updated_at'    => $spaceship->updated_at
                 ];
             })
         ];
