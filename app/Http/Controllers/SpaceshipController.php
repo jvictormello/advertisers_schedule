@@ -47,7 +47,13 @@ class SpaceshipController extends BaseController
      */
     public function store(SpaceshipRequest $request)
     {
-        $result = $this->spaceshipService->save($request->all());
+        $result = [];
+
+        try {
+            $result = $this->spaceshipService->save($request->all());
+        } catch (Exception $e) {
+            $result = ['error' => ['Server failed.', null, 500]];
+        }
 
         return isset($result['error']) ? $this->sendResponse($result['error']) : new SpaceshipResource($result);
     }
@@ -60,7 +66,13 @@ class SpaceshipController extends BaseController
      */
     public function show($id)
     {
-        $result = $this->spaceshipService->getById($id);
+        $result = [];
+
+        try {
+            $result = $this->spaceshipService->getById($id);
+        } catch (Exception $e) {
+            $result = ['error' => ['Server failed.', null, 500]];
+        }
 
         return isset($result['error']) ? $this->sendResponse($result['error']) : new SpaceshipResource($result);
     }
@@ -74,7 +86,13 @@ class SpaceshipController extends BaseController
      */
     public function update(SpaceshipRequest $request, $id)
     {
-        $result = $this->spaceshipService->update($request->all(), $id);
+        $result = [];
+
+        try {
+            $result = $this->spaceshipService->update($request->all(), $id);
+        } catch (Exception $e) {
+            $result = ['error' => ['Server failed.', null, 500]];
+        }
 
         return isset($result['error']) ? $this->sendResponse($result['error']) : new SpaceshipResource($result);
     }
@@ -87,8 +105,14 @@ class SpaceshipController extends BaseController
      */
     public function destroy($id)
     {
-        $result = $this->spaceshipService->deleteById($id);
-        
+        $result = [];
+
+        try {
+            $result = $this->spaceshipService->deleteById($id);
+        } catch (Exception $e) {
+            $result = ['error' => ['Server failed.', null, 500]];
+        }
+
         return isset($result['error']) ? $this->sendResponse($result['error']) : $this->sendResponse($result);
     }
 }

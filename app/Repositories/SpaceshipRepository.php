@@ -39,18 +39,7 @@ class SpaceshipRepository
      */
     public function save($data)
     {
-        $spaceship = $this->spaceship;
-
-        $spaceship->name = $data['name'];
-        $spaceship->description = $data['description'];
-        
-        if (isset($data['capacity'])) {
-            $spaceship->capacity = $data['capacity'];
-        }
-
-        $spaceship->save();
-
-        return $spaceship->fresh();
+        return $this->spaceship->create($data);
     }
     
     /**
@@ -61,13 +50,7 @@ class SpaceshipRepository
      */
     public function getById($id)
     {
-        $spaceship = $this->getSpaceship($id);
-
-        if (is_null($spaceship)) {
-            return ['error' => ['Spaceship not found.', null, 400]];
-        }
-
-        return $spaceship;
+        return $this->spaceship->findOrFail($id);
     }
 
     /**
