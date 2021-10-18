@@ -13,13 +13,15 @@ class CreateSpaceshipsTable extends Migration
      */
     public function up()
     {
-        Schema::create('spaceships', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->integer('capacity')->default(0);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('spaceships')) {
+            Schema::create('spaceships', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('description');
+                $table->integer('capacity')->default(0);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

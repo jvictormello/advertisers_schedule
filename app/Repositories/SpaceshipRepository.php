@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Spaceship;
+use Illuminate\Support\Facades\Http;
 
 class SpaceshipRepository
 {
@@ -50,7 +51,15 @@ class SpaceshipRepository
      */
     public function getById($id)
     {
-        return $this->spaceship->findOrFail($id);
+        $spaceship = $this->spaceship->findOrFail($id);
+
+        $response = Http::get('https://api.thecatapi.com/v1/breeds/search', [
+            'q' => $spaceship->name
+        ])->object();
+
+        $spaceship->info_from_api = $response;
+
+        return $spaceship;
     }
 
     /**
