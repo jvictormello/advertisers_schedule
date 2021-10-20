@@ -74,7 +74,7 @@ class SpaceshipController extends BaseController
             $result = ['error' => ['Server failed.', null, 500]];
         }
 
-        return isset($result['error']) ? $this->sendResponse($result['error']) : new SpaceshipResource($result);
+        return isset($result['error']) ? $this->sendResponse($result['error']) : response()->json(['data' => $result]);
     }
 
     /**
