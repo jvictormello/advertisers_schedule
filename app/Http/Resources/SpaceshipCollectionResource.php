@@ -21,7 +21,6 @@ class SpaceshipCollectionResource extends ResourceCollection
                     'name'          => $spaceship->name,
                     'description'   => $spaceship->description,
                     'capacity'      => $spaceship->capacity,
-                    'info_from_api' => $spaceship->info_from_api,
                     'created_at'    => $spaceship->created_at,
                     'updated_at'    => $spaceship->updated_at
                 ];

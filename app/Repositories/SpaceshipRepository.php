@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Spaceship;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Log;
 
 class SpaceshipRepository
 {
@@ -29,7 +31,17 @@ class SpaceshipRepository
      */
     public function getAll()
     {
-        return $this->spaceship->get();
+        if (Cache::has('spaceships')) {
+            $spaceships = json_decode(Cache::get('spaceships'));
+            Log::info('Cache');
+        } else {
+            $spaceships = $this->spaceship->get();
+            
+            Cache::put('spaceships', json_encode($spaceships), now()->addMinutes(60));
+            Log::info('Sem Cache');
+        }
+
+        return $spaceships;
     }
 
     /**
@@ -40,6 +52,8 @@ class SpaceshipRepository
      */
     public function save($data)
     {
+        Cache::forget('spaceships');
+
         return $this->spaceship->create($data);
     }
     
@@ -51,14 +65,24 @@ class SpaceshipRepository
      */
     public function getById($id)
     {
-        $spaceship = $this->spaceship->findOrFail($id);
+        $cacheKey = 'spaceships:' . $id;
 
-        $response = Http::get('https://api.thecatapi.com/v1/breeds/search', [
-            'q' => $spaceship->name
-        ])->object();
+        if (Cache::has($cacheKey)) {
+            $spaceship = collect(json_decode(Cache::get($cacheKey), true));
+            Log::info('Cache');
+        } else {
+            $spaceship = $this->spaceship->findOrFail($id);
 
-        $spaceship->info_from_api = $response;
+            $response = Http::get('https://api.thecatapi.com/v1/breeds/search', [
+                'q' => $spaceship->name
+            ])->object();
 
+            $spaceship->info_from_api = $response;
+
+            Cache::put($cacheKey, json_encode($spaceship), now()->addMinutes(60));
+            Log::info('Sem Cache');
+        }
+        
         return $spaceship;
     }
 
@@ -85,6 +109,8 @@ class SpaceshipRepository
 
         $spaceship->update();
 
+        Cache::forget('spaceships');
+
         return $spaceship;
     }
 
@@ -103,6 +129,8 @@ class SpaceshipRepository
         }
 
         $spaceship->delete();
+
+        Cache::forget('spaceships');
 
         return true;
     }
