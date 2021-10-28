@@ -5,27 +5,31 @@ help:
 
 .DEFAULT_GOAL := help
 
+start: up install_frontend install_backend migrate ## Start services
+
+restart: recreate install_frontend install_backend migrate ## Restart services
+
 install_frontend: up ## Install all dependecies frontend
+	@echo "\n>> Install node dependecies\n"
 	@docker-compose exec cate-app npm install
 
-
 watch_frontend: up ## Watch file changes on frontend
+	@echo "\n>> Watch node changes\n"
 	@docker-compose exec cate-app npm run watch
 	
-
 install_backend: up ## Install all dependecies backend
+ 	@echo "\n>> Install php dependecies\n"
 	@docker-compose exec cate-app ln -sf .env.example .env
 	@docker-compose exec cate-app composer install
 	
-	
 migrate: up ## Install all dependecies backend
+	@echo "\n>> Migrate databases\n"
 	@docker-compose exec cate-app php artisan migrate
 
-start: up install_frontend install_backend migrate ## Start services
-
 up: ## Up all containers
+	@echo "\n>> Up cate Containers\n"
 	@docker-compose up -d --build
 	
-	
-retart: ## Retart containers
+recreate: ## Recreate all containers
+	@echo "\n>> Recreate cate Containers\n"
 	@docker-compose up -d --build --force-recreate
