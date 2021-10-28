@@ -18,7 +18,7 @@ watch_frontend: up ## Watch file changes on frontend
 	@docker-compose exec cate-app npm run watch
 	
 install_backend: up ## Install all dependecies backend
- 	@echo "\n>> Install php dependecies\n"
+	@echo "\n>> Install php dependecies\n"
 	@docker-compose exec cate-app ln -sf .env.example .env
 	@docker-compose exec cate-app composer install
 	
