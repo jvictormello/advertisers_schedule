@@ -10,3 +10,8 @@ RUN adduser $user sudo \
 &&  echo "${user}     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER $user
+
+RUN sudo apt-get update \
+    && sudo apt-get install php7.3-sqlite3 -y \
+    && sudo phpenmod sqlite3 \
+    && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
