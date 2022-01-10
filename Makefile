@@ -12,6 +12,7 @@ restart: recreate install_frontend install_backend migrate ## Restart services
 install_frontend: up ## Install all dependecies frontend
 	@echo "\n>> Install node dependecies\n"
 	@docker-compose exec cate-app npm install
+	@docker-compose exec cate-app npm run prod
 
 watch_frontend: up ## Watch file changes on frontend
 	@echo "\n>> Watch node changes\n"
