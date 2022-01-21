@@ -5,22 +5,36 @@ help:
 
 .DEFAULT_GOAL := help
 
-build_frontend: ## Install all dependecies frontend
-	@docker-compose up -d
+start: up install_frontend install_backend migrate ## Start services
+
+restart: recreate install_frontend install_backend migrate ## Restart services
+
+install_frontend: up ## Install all dependecies frontend
+	@echo "\n>> Install node dependecies\n"
 	@docker-compose exec cate-app npm install
 	@docker-compose exec cate-app npm run prod
 
-build_backend: ## Install all dependecies backend
-	@docker-compose up -d
-	@docker-compose exec cate-app composer install
+watch_frontend: up ## Watch file changes on frontend
+	@echo "\n>> Watch node changes\n"
+	@docker-compose exec cate-app npm run watch
 
-start: ## Start containers
-	@docker-compose up -d --build
+install_backend: up ## Install all dependecies backend
+	@echo "\n>> Install php dependecies\n"
 	@docker-compose exec cate-app ln -sf .env.example .env
-	@docker-compose exec cate-app npm install
-	@docker-compose exec cate-app npm run prod
 	@docker-compose exec cate-app composer install
+
+migrate: up ## Install all dependecies backend
+	@echo "\n>> Migrate databases\n"
 	@docker-compose exec cate-app php artisan migrate
 
-retart: ## Retart containers
+up: ## Up all containers
+	@echo "\n>> Up cate Containers\n"
+	@docker-compose up -d --build
+
+recreate: ## Recreate all containers
+	@echo "\n>> Recreate cate Containers\n"
 	@docker-compose up -d --build --force-recreate
+
+run_tests: ## Run tests
+	@echo "\n>> Run tests\n"
+	@docker-compose exec cate-app php artisan test --parallel
