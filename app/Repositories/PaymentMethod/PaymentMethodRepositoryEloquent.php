@@ -5,22 +5,34 @@ namespace App\Repositories\PaymentMethod;
 use App\Models\PaymentMethod;
 use App\Repositories\PaymentMethod\PaymentMethodRepositoryContract;
 
-class PaymentMethodRepositoryEloquent implements PaymentMethodRepositoryContract {
+class PaymentMethodRepositoryEloquent implements PaymentMethodRepositoryContract 
+{
 
-    public function createPaymentMethod($userId, $cardNumber, $holder, $expirationDate, $securityCode, $brand) {
-        return PaymentMethod::create($userId, $cardNumber, $holder, $expirationDate, $securityCode, $brand);
+    private $paymentMethod;
+
+    public function __construct(PaymentMethod $paymentMethod)
+    {
+        $this->paymentMethod = $paymentMethod;
     }
 
-    public function updatePaymentMethod($paymentMethodId, $holder, $expirationDate, $brand, $securityCode) {
-        return PaymentMethod::whereId($paymentMethodId)->update($holder, $expirationDate, $brand, $securityCode);
+    public function createPaymentMethod($userId, $cardNumber, $holder, $expirationDate, $securityCode, $brand) 
+    {
+        return $this->paymentMethod->create($userId, $cardNumber, $holder, $expirationDate, $securityCode, $brand);
     }
 
-    public function deletePaymentMethod($paymentMethodId) {
-        PaymentMethod::destroy($paymentMethodId);
+    public function updatePaymentMethod($paymentMethodId, $holder, $expirationDate, $brand, $securityCode) 
+    {
+        return $this->paymentMethod->($paymentMethodId)->update($holder, $expirationDate, $brand, $securityCode);
     }
 
-    public function getAllPaymentMethods() {
-        return PaymentMethod::all();
+    public function deletePaymentMethod($paymentMethodId) 
+    {
+        $this->paymentMethod->($paymentMethodId);
+    }
+
+    public function getAllPaymentMethods()
+    {
+        return $this->paymentMethod->all();
     }
 
 }
