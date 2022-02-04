@@ -24,7 +24,7 @@ class TransactionFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_id' => User::factory()->first()->id,
             'payment_method_id' => PaymentMethod::inRandomOrder()->first()->id,
             'name' => $this->faker->name(),
             'total_amount' => $this->faker->unique()->randomFloat(2),

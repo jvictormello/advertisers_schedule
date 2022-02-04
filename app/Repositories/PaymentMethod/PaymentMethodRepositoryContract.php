@@ -2,7 +2,8 @@
 
 namespace App\Repositories\PaymentMethod;
 
-interface PaymentMethodRepositoryContract {
+interface PaymentMethodRepositoryContract 
+{
   public function createPaymentMethod($userId, $cardNumber, $holder, $expirationDate, $brand, $securityCode);
 
   public function updatePaymentMethod($paymentMethodId, $holder, $expirationDate, $brand, $securityCode);
