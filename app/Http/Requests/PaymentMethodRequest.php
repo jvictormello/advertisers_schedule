@@ -44,6 +44,10 @@ class PaymentMethodRequest extends FormRequest
             'holder' => [
                 'required',
                 'string'
+            ],
+            'user_id' => [
+                'required',
+                'string'
             ]
             
         ];

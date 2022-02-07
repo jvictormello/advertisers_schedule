@@ -27,7 +27,7 @@ class PaymentMethodController extends Controller
     
     public function store(PaymentMethodRequest $request): JsonResponse
     {
-        $paymentData = $request->all();
+        $paymentData = $request->validated();
 
         return response()->json([
                 'data' => $this->paymentService->createPaymentMethod($paymentData)
@@ -37,38 +37,28 @@ class PaymentMethodController extends Controller
     }
 
     
-    public function show(Request $request): JsonResponse
+    public function show($id): JsonResponse
     {
-        $paymentId = $request->route('id');
         return response()->json([
-            'data' => $this->paymentService->getPaymentMethodsById($paymentId)
+            'data' => $this->paymentService->getPaymentMethodsById($id)
         ]);
     }
 
 
-    public function update(Request $request): JsonResponse
+    public function update($id, PaymentMethodRequest $request): JsonResponse
     {
-        $paymentId = $request->route('id');
-        $data = $request->only([
-            'card_number',
-            'holder',
-            'expiration_date',
-            'security_code',
-            'brand'
-        ]);
+        $data = $request->validated();
 
         return response()->json([
-                'data' => $this->paymentService->updatePaymentMethod($paymentId, $data),
-                'id' => $paymentId
+                'data' => $this->paymentService->updatePaymentMethod($id, $data)
             ],
         );
     }
 
 
-    public function destroy(Request $request): JsonResponse 
+    public function destroy($id): JsonResponse 
     {
-        $paymentMethodId = $request->route('id');
-        $this->paymentService->deletePaymentMethod($paymentMethodId);
+        $this->paymentService->deletePaymentMethod($id);
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
