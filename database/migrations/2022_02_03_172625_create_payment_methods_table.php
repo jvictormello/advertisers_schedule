@@ -16,7 +16,7 @@ class CreatePaymentMethodsTable extends Migration
     {
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->string('card_number', 16)->unique();
             $table->string('holder', 201);
             $table->string('expiration_date', 7);

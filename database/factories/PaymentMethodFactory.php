@@ -15,8 +15,8 @@ class PaymentMethodFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory()->first()->id,
-            'card_number' => $this->faker->unique()->randomNumber(9, true),
+            'user_id' => User::factory()->create()->id,
+            'card_number' => $this->faker->unique()->numerify('################'),
             'holder' => $this->faker->name(),
             'expiration_date' => $this->faker->date('m-y'),
             'security_code' => Str::random(3),

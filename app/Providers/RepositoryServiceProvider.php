@@ -14,7 +14,7 @@ class RepositoryServiceProvider extends ServiceProvider
      * @return void
      */
     public function register() {
-        $this->app->bind(PaymentMethodContract::class, PaymentMethodEloquent::class);
+        $this->app->bind(PaymentMethodRepositoryContract::class, PaymentMethodRepositoryEloquent::class);
     }
 
 
