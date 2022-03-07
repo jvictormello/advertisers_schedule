@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\PaymentMethod\PaymentMethodRepositoryContract;
 use App\Repositories\PaymentMethod\PaymentMethodRepositoryEloquent;
+use App\Repositories\Product\ProductRepositoryContract;
+use App\Repositories\Product\ProductRepositoryEloquent;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register() {
         $this->app->bind(PaymentMethodRepositoryContract::class, PaymentMethodRepositoryEloquent::class);
+        $this->app->bind(ProductRepositoryContract::class, ProductRepositoryEloquent::class);
     }
 
 

@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Services\Product\ProductService;
+use Illuminate\Http\JsonResponse;
 
 class CartController extends Controller
 {
-    public function __invoke()
+    private $productService;
+
+    public function __construct(ProductService $productService)
     {
-        try {
-            return response()->json(Product::all(), 200);
-        } catch(Exception $e) {
-            return response()->json('Unexpected error, try later!');
-        }
+        $this->productService = $productService;
+    }
+    public function index(): JsonResponse
+    {
+        return response()->json($this->productService->getProductsWithStock());
     }
 }
