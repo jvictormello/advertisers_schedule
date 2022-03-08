@@ -10,6 +10,7 @@ class ProductRepositoryEloquent implements ProductRepositoryContract
 {
 
     protected $product;
+    const MINIMAL_STOCK = 1;
 
     public function __construct(Product $product)
     {
@@ -23,7 +24,7 @@ class ProductRepositoryEloquent implements ProductRepositoryContract
 
     public function getProductsWithStock()
     {
-        return $this->product->where('quantity', '>', 0)->get();
+        return $this->product->where('quantity', '>=', self::MINIMAL_STOCK)->get();
     }
 
     public function getProductById(int $id)

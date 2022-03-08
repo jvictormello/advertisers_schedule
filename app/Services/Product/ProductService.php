@@ -46,6 +46,13 @@ class ProductService implements ProductServiceContract
         });
     }
 
+    public function getTotalAmount()
+    {
+        return $this->getProductsWithStock()->sum(function ($product) {
+            return $product->price;
+        });
+    }
+
     public function clearProductsWithStockCache()
     {
         Cache::forget('ProductsWithStock');
