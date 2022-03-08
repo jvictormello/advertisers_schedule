@@ -24,28 +24,28 @@ class PaymentMethodRequest extends FormRequest
     public function rules()
     {
         return [
-            'card_number' => [
+            'CardNumber' => [
                 'required',
                 'string',
                 'unique:payment_methods,card_number'
             ],
-            'brand' => [
+            'Brand' => [
                 'required',
                 'string'
             ],
-            'expiration_date' => [
+            'ExpirationDate' => [
                 'required',
                 'string'
             ],
-            'security_code' => [
+            'SecurityCode' => [
                 'required',
                 'int'
             ],
-            'holder' => [
+            'Holder' => [
                 'required',
                 'string'
             ],
-            'user_id' => [
+            'UserId' => [
                 'required',
                 'string'
             ]

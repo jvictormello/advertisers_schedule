@@ -17,7 +17,7 @@ class PaymentMethodRepositoryEloquent implements PaymentMethodRepositoryContract
 
     public function getAllPaymentMethods()
     {
-        return $this->paymentMethod->paginate();
+        return $this->paymentMethod->get();
     }
 
     public function getPaymentMethodsById(int $id)

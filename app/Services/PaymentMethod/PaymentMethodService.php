@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\PaymentMethod;
 
 use App\Repositories\PaymentMethod\PaymentMethodRepositoryContract;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
-use Illuminate\Http\Response;
 
-
-class PaymentMethodService
+class PaymentMethodService implements PaymentMethodServiceContract
 {
 
     protected $paymentMethodRepository;
@@ -18,7 +14,7 @@ class PaymentMethodService
         $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
-    public function createPaymentMethod(array $data) 
+    public function createPaymentMethod(array $data)
     {
         return $this->paymentMethodRepository->createPaymentMethod($data);
     }
@@ -28,7 +24,7 @@ class PaymentMethodService
         return $this->paymentMethodRepository->updatePaymentMethod($paymentId, $data);
     }
 
-    public function deletePaymentMethod($paymentMethodId) 
+    public function deletePaymentMethod($paymentMethodId)
     {
         $this->paymentMethodRepository->deletePaymentMethod($paymentMethodId);
     }
@@ -42,5 +38,4 @@ class PaymentMethodService
     {
         return $this->paymentMethodRepository->getPaymentMethodsById($id);
     }
-
 }
