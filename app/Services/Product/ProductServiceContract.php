@@ -9,6 +9,7 @@ interface ProductServiceContract
     public function deleteProduct($productId);
     public function getAllProducts();
     public function getProductsWithStock();
+    public function getTotalAmount();
     public function clearProductsWithStockCache();
     public function getProductsById(int $id);
 
