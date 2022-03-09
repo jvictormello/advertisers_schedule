@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sale;
+use App\Models\Transaction;
 use App\Services\Sale\SaleServiceContract;
 use Illuminate\Http\JsonResponse;
 
@@ -15,8 +16,13 @@ class SaleController extends Controller
     {
         $this->saleService = $saleService;
     }
-    public function index(): JsonResponse
+    public function ListAllSales(): JsonResponse
     {
-        return response()->json($this->saleService->getSalesByUserId(1));
+        return response()->json($this->saleService->getAllSales());
+    }
+
+    public function ListSalesByUserId($userId): JsonResponse
+    {
+        return response()->json($this->saleService->getAllSales());
     }
 }

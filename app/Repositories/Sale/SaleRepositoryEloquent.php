@@ -19,7 +19,7 @@ class SaleRepositoryEloquent implements SaleRepositoryContract
 
     public function getAllSales()
     {
-        return $this->sale->paginate();
+        return $this->sale->all();
     }
 
     public function getSaleByUserId(int $id)
