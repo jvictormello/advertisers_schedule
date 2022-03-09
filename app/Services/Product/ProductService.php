@@ -21,28 +21,28 @@ class ProductService implements ProductServiceContract
 
     public function createProduct(array $data)
     {
-        return $this->productRepository->createProduct($data);
+        return $this->productRepository->create($data);
     }
 
     public function updateProduct(int $paymentId, array $data)
     {
-        return $this->productRepository->updateProduct($paymentId, $data);
+        return $this->productRepository->update($paymentId, $data);
     }
 
     public function deleteProduct($productId)
     {
-        $this->productRepository->deleteProduct($productId);
+        $this->productRepository->delete($productId);
     }
 
     public function getAllProducts()
     {
-        return $this->productRepository->getAllProducts();
+        return $this->productRepository->getAll();
     }
 
     public function getProductsWithStock()
     {
         return Cache::rememberForever('ProductsWithStock', function () {
-            return $this->productRepository->getProductsWithStock();
+            return $this->productRepository->getWithStock();
         });
     }
 
@@ -58,8 +58,8 @@ class ProductService implements ProductServiceContract
         Cache::forget('ProductsWithStock');
     }
 
-    public function getProductsById(int $id)
+    public function getProductById(int $id)
     {
-        return $this->productRepository->getProductById($id);
+        return $this->productRepository->getById($id);
     }
 }

@@ -10,29 +10,33 @@ class TransactionRepositoryEloquent implements TransactionRepositoryContract
 
     private $transaction;
 
-    public function __construct(Transaction $paymentMethod)
+    public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
     }
 
-    public function createTransaction($userId, $cardNumber, $holder, $expirationDate, $securityCode, $brand) 
+    public function getById(int $id)
     {
-        return $this->transaction->create($userId, $cardNumber, $holder, $expirationDate, $securityCode, $brand);
+        return $this->sale->whereId($id)->first();
     }
 
-    public function updateTransaction($transactionId, $holder, $expirationDate, $brand, $securityCode) 
+    public function create(array $data)
     {
-        return $this->transaction->whereId($transactionId)->update($holder, $expirationDate, $brand, $securityCode);
+        return $this->transaction->create($data);
     }
 
-    public function deleteTransaction($transactionId) 
+    public function update(int $id, array $data)
     {
-        $this->transaction->destroy($transactionId);
+        return $this->transaction->whereId($id)->update($data);
     }
 
-    public function getAllTransactions() 
+    public function delete(int $id)
+    {
+        $this->transaction->destroy($id);
+    }
+
+    public function getAll()
     {
         return $this->transaction->all();
     }
-
 }

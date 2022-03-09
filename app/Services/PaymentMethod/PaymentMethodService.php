@@ -16,26 +16,26 @@ class PaymentMethodService implements PaymentMethodServiceContract
 
     public function createPaymentMethod(array $data)
     {
-        return $this->paymentMethodRepository->createPaymentMethod($data);
+        return $this->paymentMethodRepository->create($data);
     }
 
-    public function updatePaymentMethod(int $paymentId, array $data)
+    public function updatePaymentMethod(int $id, array $data)
     {
-        return $this->paymentMethodRepository->updatePaymentMethod($paymentId, $data);
+        return $this->paymentMethodRepository->update($id, $data);
     }
 
-    public function deletePaymentMethod($paymentMethodId)
+    public function deletePaymentMethod(int $id)
     {
-        $this->paymentMethodRepository->deletePaymentMethod($paymentMethodId);
+        $this->paymentMethodRepository->delete($id);
     }
 
     public function getAllPaymentMethods()
     {
-        return $this->paymentMethodRepository->getAllPaymentMethods();
+        return $this->paymentMethodRepository->getAll();
     }
 
     public function getPaymentMethodsById(int $id)
     {
-        return $this->paymentMethodRepository->getPaymentMethodsById($id);
+        return $this->paymentMethodRepository->getById($id);
     }
 }

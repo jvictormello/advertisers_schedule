@@ -4,11 +4,11 @@ namespace App\Repositories\Product;
 
 interface ProductRepositoryContract 
 {
-    public function getAllProducts();
-    public function getProductsWithStock();
-    public function getProductById(int $id);
-    public function createProduct(array $data);
-    public function updateProduct(int $id, array $data);
-    public function deleteProduct(int $ProductId);
+    public function getAll();
+    public function getWithStock();
+    public function getById(int $id);
+    public function create(array $data);
+    public function update(int $id, array $data);
+    public function delete(int $id);
  
 }

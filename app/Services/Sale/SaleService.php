@@ -21,31 +21,31 @@ class SaleService implements SaleServiceContract
 
     public function createSale(array $data)
     {
-        return $this->saleRepository->createSale($data);
+        return $this->saleRepository->create($data);
     }
 
-    public function updateSale(int $paymentId, array $data)
+    public function updateSale(int $id, array $data)
     {
-        return $this->saleRepository->updateSale($paymentId, $data);
+        return $this->saleRepository->update($id, $data);
     }
 
-    public function deleteSale($SaleId)
+    public function deleteSale(int $id)
     {
-        $this->saleRepository->deleteSale($SaleId);
+        $this->saleRepository->delete($id);
     }
 
     public function getAllSales()
     {
-        return $this->saleRepository->getAllSales();
+        return $this->saleRepository->getAll();
     }
 
     public function getSalesById(int $id)
     {
-        return $this->saleRepository->getSaleById($id);
+        return $this->saleRepository->getById($id);
     }
 
     public function getSalesByUserId(int $id)
     {
-        return $this->saleRepository->getSaleByUserId($id);
+        return $this->saleRepository->getByUserId($id);
     }
 }

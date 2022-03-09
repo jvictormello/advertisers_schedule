@@ -17,32 +17,32 @@ class SaleRepositoryEloquent implements SaleRepositoryContract
         $this->sale = $sale;
     }
 
-    public function getAllSales()
+    public function getAll()
     {
         return $this->sale->all();
     }
 
-    public function getSaleByUserId(int $id)
+    public function getByUserId(int $id)
     {
         return $this->sale->where('user_id', '=', $id)->get();
     }
 
-    public function getSaleById(int $id)
+    public function getById(int $id)
     {
         return $this->sale->whereId($id)->first();
     }
 
-    public function createSale(array $data)
+    public function create(array $data)
     {
         return $this->sale->create($data);
     }
 
-    public function updateSale(int $id, array $data)
+    public function update(int $id, array $data)
     {
         return $this->sale->whereId($id)->update($data);
     }
 
-    public function deleteSale(int $saleId)
+    public function delete(int $saleId)
     {
         $this->sale->destroy($saleId);
     }

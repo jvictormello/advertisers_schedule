@@ -2,14 +2,11 @@
 
 namespace App\Repositories\Transaction;
 
-interface TransactionRepositoryContract 
+interface TransactionRepositoryContract
 {
-  public function createPaymentMethod($userId, $cardNumber, $holder, $expirationDate, $brand, $securityCode);
-
-  public function updatePaymentMethod($paymentMethodId, $holder, $expirationDate, $brand, $securityCode);
-
-  public function deletePaymentMethod($paymentMethodId);
-
-  public function getAllPaymentMethods();
-  
+  public function getAll();
+  public function getById(int $id);
+  public function create(array $data);
+  public function update(int $id, array $data);
+  public function delete(int $id);
 }

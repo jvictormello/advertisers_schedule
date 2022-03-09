@@ -4,11 +4,11 @@ namespace App\Repositories\Sale;
 
 interface SaleRepositoryContract 
 {
-    public function getAllSales();
-    public function getSaleById(int $id);
-    public function getSaleByUserId(int $id);
-    public function createSale(array $data);
-    public function updateSale(int $id, array $data);
-    public function deleteSale(int $SaleId);
+    public function getAll();
+    public function getById(int $id);
+    public function getByUserId(int $id);
+    public function create(array $data);
+    public function update(int $id, array $data);
+    public function delete(int $SaleId);
  
 }

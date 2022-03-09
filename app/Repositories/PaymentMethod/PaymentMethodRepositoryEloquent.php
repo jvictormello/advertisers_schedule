@@ -15,30 +15,28 @@ class PaymentMethodRepositoryEloquent implements PaymentMethodRepositoryContract
         $this->paymentMethod = $paymentMethod;
     }
 
-    public function getAllPaymentMethods()
+    public function getAll()
     {
         return $this->paymentMethod->get();
     }
 
-    public function getPaymentMethodsById(int $id)
+    public function getById(int $id)
     {
         return $this->paymentMethod->whereId($id)->first();
     }
 
-    public function createPaymentMethod(array $data) 
+    public function create(array $data)
     {
         return $this->paymentMethod->create($data);
     }
 
-    public function updatePaymentMethod(int $id, array $data)
+    public function update(int $id, array $data)
     {
         return $this->paymentMethod->whereId($id)->update($data);
     }
 
-    public function deletePaymentMethod(int $paymentMethodId) 
+    public function delete(int $id)
     {
-        $this->paymentMethod->destroy($paymentMethodId);
+        $this->paymentMethod->destroy($id);
     }
-
-
 }

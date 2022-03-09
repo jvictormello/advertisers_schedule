@@ -16,12 +16,12 @@ class SaleController extends Controller
     {
         $this->saleService = $saleService;
     }
-    public function ListAllSales(): JsonResponse
+    public function listAllSales(): JsonResponse
     {
         return response()->json($this->saleService->getAllSales());
     }
 
-    public function ListSalesByUserId($userId): JsonResponse
+    public function listSalesByUserId($userId): JsonResponse
     {
         return response()->json($this->saleService->getAllSales());
     }
