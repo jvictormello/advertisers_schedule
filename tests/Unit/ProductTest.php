@@ -29,9 +29,9 @@ class ProductTest extends TestCase
         $productRepository = new ProductRepositoryEloquent(new Product());
         $productService = new ProductService($productRepository);
         $productService->clearProductsWithStockCache();
-        $ProductsWithStock = $productService->getProductsWithStock();
+        $ProductsWithStock = $productService->getProductsWithStock()->count();
 
-        $this->assertEquals($expected, count($ProductsWithStock) > 0);
+        $this->assertEquals($expected, $ProductsWithStock > 0);
     }
 
     public function cases_product_stock_data_provider()
@@ -60,13 +60,11 @@ class ProductTest extends TestCase
         $productRepository = new ProductRepositoryEloquent(new Product());
         $productService = new ProductService($productRepository);
         $productService->clearProductsWithStockCache();
-        $ProductsWithStock = $productService->getProductsWithStock();
-        $cachedQuantity = count($ProductsWithStock);
+        $cachedQuantity = $productService->getProductsWithStock()->count();
 
         Product::first()->delete();
 
-        $ProductsWithStockFromCache = $productService->getProductsWithStock();
-        $afterDeleteCachedQuantity = count($ProductsWithStockFromCache);
+        $afterDeleteCachedQuantity = $productService->getProductsWithStock()->count();
 
         $this->assertEquals($afterDeleteCachedQuantity, $cachedQuantity);
     }
@@ -83,14 +81,12 @@ class ProductTest extends TestCase
         $productRepository = new ProductRepositoryEloquent(new Product());
         $productService = new ProductService($productRepository);
         $productService->clearProductsWithStockCache();
-        $ProductsWithStock = $productService->getProductsWithStock();
-        $cachedQuantity = count($ProductsWithStock);
+        $cachedQuantity = $productService->getProductsWithStock()->count();
 
         Product::first()->delete();
 
         $productService->clearProductsWithStockCache();
-        $ProductsWithStockFromCache = $productService->getProductsWithStock();
-        $afterDeleteCachedQuantity = count($ProductsWithStockFromCache);
+        $afterDeleteCachedQuantity = $productService->getProductsWithStock()->count();
 
         $this->assertNotEquals($afterDeleteCachedQuantity, $cachedQuantity);
     }
@@ -100,7 +96,7 @@ class ProductTest extends TestCase
      * @dataProvider cases_products_prices_and_total_data_provider
      * @return void
      */
-    public function product_total_amount_validation($prices, $totalAmountEspected)
+    public function product_total_amount_validation($prices, $totalAmountExpected)
     {
         foreach ($prices as $price) {
             Product::factory()->create([
@@ -113,7 +109,7 @@ class ProductTest extends TestCase
         $productService->clearProductsWithStockCache();
         $totalAmountCachedCart = $productService->getTotalAmount();
 
-        $this->assertEquals($totalAmountEspected, $totalAmountCachedCart);
+        $this->assertEquals($totalAmountExpected, $totalAmountCachedCart);
     }
 
     public function cases_products_prices_and_total_data_provider()
@@ -121,15 +117,19 @@ class ProductTest extends TestCase
         return [
             'Should be equals when sum integer prices' => [
                 'prices' => [10, 20, 30, 40],
-                'totalAmountEspected' => 100
+                'totalAmountExpected' => 100
             ],
             'Should be equals when sum float prices' => [
                 'prices' => [1.1, 2.2, 3.3, 4.4],
-                'totalAmountEspected' => 11
+                'totalAmountExpected' => 11
             ],
             'Should be equals when sum only one product' => [
                 'prices' => [123],
-                'totalAmountEspected' => 123
+                'totalAmountExpected' => 123
+            ],
+            'Should be equals when sum no producs' => [
+                'prices' => [],
+                'totalAmountExpected' => 0
             ]
         ];
     }

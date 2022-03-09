@@ -15,7 +15,7 @@ class CartController extends Controller
     {
         $this->productService = $productService;
     }
-    public function index(): JsonResponse
+    public function ListAllProducts(): JsonResponse
     {
         return response()->json($this->productService->getProductsWithStock());
     }
