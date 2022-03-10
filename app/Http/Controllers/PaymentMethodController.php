@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\PaymentMethod\PaymentMethodServiceContract;
 use App\Http\Requests\PaymentMethodRequest;
+use App\Http\Resources\Product\PaymentMethodCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -19,7 +20,10 @@ class PaymentMethodController extends Controller
 
     public function index(): JsonResponse
     {
-        return response()->json($this->paymentService->getAllPaymentMethods());
+        $response = new PaymentMethodCollection(
+            $this->paymentService->getAllPaymentMethods()
+        );
+        return response()->json($response);
     }
 
 
@@ -36,7 +40,10 @@ class PaymentMethodController extends Controller
 
     public function show($id): JsonResponse
     {
-        return response()->json($this->paymentService->getPaymentMethodsById($id));
+        $response = new PaymentMethodCollection(
+            $this->paymentService->getPaymentMethodsById($id)
+        );
+        return response()->json($response);
     }
 
 
@@ -44,7 +51,9 @@ class PaymentMethodController extends Controller
     {
         $data = $request->validated();
 
-        return response()->json($this->paymentService->updatePaymentMethod($id, $request->all()));
+        return response()->json(
+            $this->paymentService->updatePaymentMethod($id, $request->all())
+        );
     }
 
 
