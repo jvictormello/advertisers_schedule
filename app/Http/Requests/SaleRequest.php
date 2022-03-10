@@ -22,15 +22,6 @@ class SaleRequest extends FormRequest
         );
     }
 
-    public function data(): array
-    {
-        return [
-            'user_id' => $this->get('UserId'),
-            'name' => $this->get('Name'),
-            'payment_method_id' => $this->get('CreditCardId')
-        ];
-    }
-
     public function rules()
     {
         return [
