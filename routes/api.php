@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/catestore')->group(function () {
     Route::get('cart', [CartController::class, 'listAllProducts']);
-    
+
     Route::resource('credit-card', PaymentMethodController::class);
 
-    Route::get('sales', [SaleController::class, 'listAllSales']);
-    Route::get('sales/{userId:[0-9]+}', [SaleController::class, 'listCostomerSales']);
+    Route::get('sales/{userId}', [SaleController::class, 'listCostomerSales']);
+    Route::resource('sales', SaleController::class)->except(['show']);
 });
