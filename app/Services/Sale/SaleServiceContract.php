@@ -8,7 +8,7 @@ interface SaleServiceContract
     public function updateSale(int $id, array $data);
     public function deleteSale(int $is);
     public function getAllSales();
-    public function getSalesById(int $id);
+    public function getSaleById(int $id);
     public function getSalesByUserId(int $id);
     
 

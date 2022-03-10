@@ -2,26 +2,51 @@
 
 namespace App\Services\Sale;
 
+use App\Jobs\LowStockJob;
+use App\Models\Transaction;
+use App\Services\Sale\SaleServiceContract;
 use App\Repositories\Sale\SaleRepositoryContract;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
-
+use App\Repositories\Sale\SaleRepositoryEloquent;
+use App\Services\Product\ProductServiceContract;
 
 class SaleService implements SaleServiceContract
 {
 
+    protected $productService;
     protected $saleRepository;
 
-    public function __construct(SaleRepositoryContract $saleRepository)
-    {
+    public function __construct(
+        SaleRepositoryContract $saleRepository,
+        ProductServiceContract $productService
+    ) {
+        $this->productService = $productService;
         $this->saleRepository = $saleRepository;
+    }
+
+    public function getAllSales()
+    {
+        return $this->saleRepository->getAll();
+    }
+
+    public function getSalesByUserId(int $id)
+    {
+        return $this->saleRepository->getByUserId($id);
+    }
+
+    public function getSaleById(int $id)
+    {
+        return $this->saleRepository->getById($id);
     }
 
     public function createSale(array $data)
     {
-        return $this->saleRepository->create($data);
+        $data['total_amount'] = $this->productService->getTotalAmount();
+
+        if ($this->saleRepository->create($data)) {
+            $this->productService->clearProductsWithStockCache();
+            return true;
+        }
+        return false;
     }
 
     public function updateSale(int $id, array $data)
@@ -32,20 +57,5 @@ class SaleService implements SaleServiceContract
     public function deleteSale(int $id)
     {
         $this->saleRepository->delete($id);
-    }
-
-    public function getAllSales()
-    {
-        return $this->saleRepository->getAll();
-    }
-
-    public function getSalesById(int $id)
-    {
-        return $this->saleRepository->getById($id);
-    }
-
-    public function getSalesByUserId(int $id)
-    {
-        return $this->saleRepository->getByUserId($id);
     }
 }

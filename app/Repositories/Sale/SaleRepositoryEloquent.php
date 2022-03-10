@@ -3,7 +3,6 @@
 namespace App\Repositories\Sale;
 
 use App\Models\Transaction;
-use App\Models\SaleMethod;
 use App\Repositories\Sale\SaleRepositoryContract;
 
 class SaleRepositoryEloquent implements SaleRepositoryContract
