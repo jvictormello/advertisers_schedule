@@ -24,14 +24,14 @@ class ProductService implements ProductServiceContract
         return $this->productRepository->create($data);
     }
 
-    public function updateProduct(int $paymentId, array $data)
+    public function updateProduct(int $id, array $data)
     {
-        return $this->productRepository->update($paymentId, $data);
+        return $this->productRepository->update($id, $data);
     }
 
-    public function deleteProduct($productId)
+    public function deleteProduct(int $id)
     {
-        $this->productRepository->delete($productId);
+        $this->productRepository->delete($id);
     }
 
     public function getAllProducts()
@@ -50,6 +50,13 @@ class ProductService implements ProductServiceContract
     {
         return $this->getProductsWithStock()->sum(function ($product) {
             return $product->price;
+        });
+    }
+
+    public function decrementProductsQuantity()
+    {
+        $this->productRepository->getWithStock()->map(function ($product) {
+            $product->decrement('quantity');
         });
     }
 
