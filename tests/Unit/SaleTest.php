@@ -2,12 +2,14 @@
 
 namespace Tests\Unit;
 
+use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Repositories\Product\ProductRepositoryEloquent;
 use App\Repositories\Sale\SaleRepositoryContract;
 use App\Repositories\Sale\SaleRepositoryEloquent;
+use App\Services\Product\ProductService;
 use App\Services\Sale\SaleService;
-use Faker\Generator as Faker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,11 +28,14 @@ class SaleTest extends TestCase
     {
         Transaction::factory()->count($salesQuantity)->create();
 
-        $productRepository = new SaleRepositoryEloquent(new Transaction());
-        $productService = new SaleService($productRepository);
-        $salesQauntityFounded = $productService->getAllSales()->count();
+        $productRepository = new ProductRepositoryEloquent(new Product());
+        $productServices = new ProductService($productRepository);
+        
+        $saleRepository = new SaleRepositoryEloquent(new Transaction());
+        $saleService = new SaleService($saleRepository, $productServices);
+        $salesQuantityFounded = $saleService->getAllSales()->count();
 
-        $this->assertEquals($salesQuantity, $salesQauntityFounded);
+        $this->assertEquals($salesQuantity, $salesQuantityFounded);
     }
 
     /**
@@ -47,11 +52,14 @@ class SaleTest extends TestCase
             'user_id' => $userId
         ]);
 
-        $productRepository = new SaleRepositoryEloquent(new Transaction());
-        $productService = new SaleService($productRepository);
-        $salesQauntityFounded = $productService->getSalesByUserId($userId)->count();
+        $productRepository = new ProductRepositoryEloquent(new Product());
+        $productServices = new ProductService($productRepository);
+        
+        $saleRepository = new SaleRepositoryEloquent(new Transaction());
+        $saleService = new SaleService($saleRepository, $productServices);
+        $salesQuantityFounded = $saleService->getSalesByUserId($userId)->count();
 
-        $this->assertEquals($salesQuantity, $salesQauntityFounded);
+        $this->assertEquals($salesQuantity, $salesQuantityFounded);
     }
 
     public function sales_quantities_data_provider()
