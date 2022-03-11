@@ -11,6 +11,7 @@ interface ProductServiceContract
     public function getProductsWithStock();
     public function getTotalAmount();
     public function clearProductsWithStockCache();
+    public function decrementProductsQuantity();
     public function getProductById(int $id);
 
 }

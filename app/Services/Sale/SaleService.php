@@ -2,6 +2,7 @@
 
 namespace App\Services\Sale;
 
+use App\Jobs\DecrementProductStockJob;
 use App\Jobs\LowStockJob;
 use App\Models\Transaction;
 use App\Services\Sale\SaleServiceContract;
@@ -44,6 +45,7 @@ class SaleService implements SaleServiceContract
 
         if ($this->saleRepository->create($data)) {
             $this->productService->clearProductsWithStockCache();
+            DecrementProductStockJob::dispatch()->onQueue('product');
             return true;
         }
         return false;

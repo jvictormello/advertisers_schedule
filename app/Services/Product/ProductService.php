@@ -41,9 +41,15 @@ class ProductService implements ProductServiceContract
 
     public function getProductsWithStock()
     {
+        Cache::forget('ProductsWithStock');
         return Cache::rememberForever('ProductsWithStock', function () {
             return $this->productRepository->getWithStock();
         });
+    }
+
+    public function clearProductsWithStockCache()
+    {
+        Cache::forget('ProductsWithStock');
     }
 
     public function getTotalAmount()
@@ -58,11 +64,6 @@ class ProductService implements ProductServiceContract
         $this->productRepository->getWithStock()->map(function ($product) {
             $product->decrement('quantity');
         });
-    }
-
-    public function clearProductsWithStockCache()
-    {
-        Cache::forget('ProductsWithStock');
     }
 
     public function getProductById(int $id)
