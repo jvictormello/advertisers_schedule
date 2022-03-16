@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Repositories\PaymentMethod;
+namespace App\Repositories\Product;
 
-interface PaymentMethodRepositoryContract 
+interface ProductRepositoryContract 
 {
     public function getAll();
+    public function getWithStock();
     public function getById(int $id);
     public function create(array $data);
     public function update(int $id, array $data);

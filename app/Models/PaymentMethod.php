@@ -17,10 +17,10 @@ class PaymentMethod extends Model
         'security_code',
         'brand'
     ];
-    
+
     protected $hidden = [
-        'id', 
-        'created_at', 
+        'id',
+        'created_at',
         'updated_at'
     ];
 }

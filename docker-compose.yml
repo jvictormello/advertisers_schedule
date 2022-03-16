@@ -51,6 +51,17 @@ services:
       retries: 3
       timeout: 5s
 
+  redis:
+    image: redis:4.0
+    container_name: cate-redis
+    env_file: .env
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - "cate"
+
 networks:
   cate:
     driver: bridge
