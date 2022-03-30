@@ -32,7 +32,7 @@ O endpoint de consulta de horário, deve retornar a duração real do serviço, 
 - Um serviço de 3 horas, tem desconto de **R$40**💵 
 
 O serviço não poderá ser finalizado antes do tempo de duração estipulado
-Caso ultrapasse o tempo de duração do serviço, deverá ser acrescentado um valor de R$100 por hora.
+Caso ultrapasse o tempo de duração do serviço, deverá ser acrescentado um valor de **R$100** por hora.
 O status do serviço é: pendente, em andamento e finalizado. Ex. ao acessar o endpoint de início do serviço, o status mudará para: em andamento, e assim por diante.
 
 O endpoint para a realização do agendamento, deverá receber todos os atributos com exceção do status. Na realização do agendamento, o CEP deve ser validado, podendo ser feito a partir da API BrasilAPI.
@@ -59,17 +59,11 @@ Ao final de um dia, deverá ser executada uma command para pegar as estatística
 #### É importante saber 🧠
 
 - Classes: utilizar o padrão camelCase, porém com a primeira letra Maiúscula, também conhecido como UpperCamelCase ex: NomeDaClasse
-
 - Métodos e variáveis: utilizar o padrão camelCase
-
 - Migrations: (nome de campos), utilizar o padrão snake_case
-
 - Nome de arquivos de migrations e tabelas: utilizar snake_case, no plural
-
 - Rotas: utilizar o padrão kebab-case (exceto o parâmetro), ex: users/example-kebabs/{userId}
-
 - Atentar as PSR’s: https://www.php-fig.org/
-
 - Seguir as padronizações de Gitflow (baseado no nosso contexto) e padrão de mensagens utilizando conventional commits. https://www.conventionalcommits.org/en/v1.0.0/
 
 <br> 
@@ -79,13 +73,9 @@ Ao final de um dia, deverá ser executada uma command para pegar as estatística
 #### Durante o processo de ambientação é importante que: 📌
 
 - Solicitação de revisão de PRs também deve ser solicitado no canal Back-End da turma, **turma-cate-XX-back-end**
-
 - O envio de dalies no Slack (canal **turma-cate-XX-back-end**), deverá ser entre 10h e 11h da manhã;
-
 - Aproveite o máximo o processo, não se preocupe em fazer códigos complexos, faça o simples. Evite se basear em códigos de Pull Requests anteriores, o ato dificulta a remoção de impedimentos e prejudica a identificação de pontos de melhorias.
-
 - Não se esqueça, o objetivo da ambientação técnica é absorver o máximo possível de técnicas, padrões e conceitos que utilizamos hoje em nossos projetos. Então use nossos projetos como base.
-
 - Lembre-se que o CATe é o primeiro time que você estará atuando na Atlas, o comportamento de equipe é esperado, se possível interaja com os colegas, auxilie e aprenda com eles. 
 
 
