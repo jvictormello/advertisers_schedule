@@ -7,8 +7,10 @@ use App\Models\Advertisers;
 
 class AdvertisersRepository extends BaseRepository implements AdvertisersRepositoryContract
 {
-    public function __construct()
+    protected $model;
+    
+    public function __construct(Advertisers $model)
     {
-        $this->model = new Advertisers();
+        $this->model = $model;
     }
 }
