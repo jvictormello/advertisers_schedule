@@ -19,5 +19,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ContractorsSeeder::class
         ]);
+        $this->call([
+            UserSeeder::class
+        ]);
+        $this->call([
+            AvailabilitiesSeeder::class
+        ]);
     }
 }

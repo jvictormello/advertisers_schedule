@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Services\Contracts\AdvertisersServiceContract;
+use App\Services\Contracts\AvailabilitiesServiceContract;
 
 class AdvertisersController extends Controller
 {
     private $advertisersService;
+    private $availabilitiesService;
 
-    public function __construct(AdvertisersServiceContract $advertisersService)
-    {
+    public function __construct(
+        AdvertisersServiceContract $advertisersService,
+        AvailabilitiesServiceContract $availabilitiesService
+    ) {
         $this->advertisersService = $advertisersService;
+        $this->availabilitiesService = $availabilitiesService;
     }
 
     /**
@@ -38,6 +43,34 @@ class AdvertisersController extends Controller
     {
         $searchRequest = new Request(['query' => json_encode(['id' => $id])]);
         return $this->list($searchRequest);
+    }
+
+    /**
+     * Display a listing of advertiser availabilities.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function listAvailabilities(?int $id = null): JsonResponse
+    {
+        try {
+            return new JsonResponse($this->availabilitiesService->searchByAdvertiserId($id));
+        } catch(\Exception $e) {
+            return $this->errorResponse($e);
+        }
+    }
+
+    /**
+     * Display an especific advertiser availability.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function viewAvailabilities(?int $id = null): JsonResponse
+    {
+        try {
+            return new JsonResponse($this->availabilitiesService->searchByAvailabilityId($id));
+        } catch(\Exception $e) {
+            return $this->errorResponse($e);
+        }
     }
 
     /**
