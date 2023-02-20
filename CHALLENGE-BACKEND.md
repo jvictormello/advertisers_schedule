@@ -1,46 +1,51 @@
 #### Desafio 🚀
 
-O desafio consiste em desenvolver uma Application Programming Interface (API), que permita que usuários contratem serviço do anunciante.
+O desafio consiste em desenvolver uma Application Programming Interface (API) de um sistema de locação de imóveis.
 
-Fique à vontade para montar a estrutura do banco conforme você desejar, somente a tabela schedules será obrigatória.
+Fique à vontade para montar a estrutura do banco conforme você desejar.
 
-Para facilitar o desenvolvimento, crie seeders de anunciantes e contratantes.
-
-A tabela schedules deve conter os atributos: id do contratante, id do anunciante, preço, data do agendamento, duração (somente valores entre 1 e 3), horário de início, horário de término, cep do contratante e status.
+Para facilitar o desenvolvimento, crie seeders.
 
 A API deverá ter os seguintes endpoints:
-- Listar anunciantes
-- Visualizar um anunciante
-- Listar horários da agenda do anunciante
-- Consulta de um horário específico da agenda do anunciante 
-- Realizar um agendamento
-- Cancelar um agendamento
-- Início do serviço
-- Término do serviço
-   
-O endpoint de listagem de anunciantes, irá retornar os anunciantes cadastrados no banco de dados da aplicação. A consulta destes anunciantes deve ser adicionada em cache no intervalo de 2 minutos.
+- Listar imóveis;
+- Visualizar imóvel específico;
+- Gerenciamento de imóveis
+- Realizar Locação;
+- Cancelar Locação;
+- Iniciar estadia;
+- Finalizar estadia;
 
-O endpoint de listagem de horários do anunciante, deve realizar um filtro através de uma query parameter para retornar:
-Todos os serviços agendados ou do dia atual
-Deve retornar somente os horários de um anunciante específico. Se houver autenticação, deverá pegar o id do anunciante autenticado, caso contrário o dado pode vir da request, somente o anunciante poderá acessar este endpoint.
+A listagem de imóveis podemos realizar filtros por quantidade máxima de pessoas ou valores;
 
-O endpoint de consulta de horário, deve retornar a duração real do serviço, ou seja, a diferença entre o início e o término. O valor do serviço deverá ser calculado dinamicamente e, o valor por hora custará **R$150**💵.
+O locatário pode ver as informações de um imóvel e os dias disponíveis para a locação.
+Essas informações devem ser cacheadas em 3 minutos
+
+O locador pode cadastrar seus imóveis e possui algumas informações obrigatórias como o CEP, descrição e características, valor/diária, quantidade máxima de pessoal e também a quantidade mínima de dias para locação.
+
+O CEP deve ser validado através de uma comunicação externa com a API do Brasil API.
+Essa comunicação externa deve estar protegida através do pacote do Circuit Breaker.
+
+Tanto o locatário como o locador podem acessar um histórico de locações através da tabelalocations. 
+Esta tabela possui alguns campos como obrigatórios, como: id do imóvel, id dolocador, período e preço final. 
+
+Sinta-se à vontade para adicionar outras informações
+
+Caso o locatário não queira mais locar o imóvel, ele pode realizar o cancelamento antes dadata prevista, 
+também deve ser emitida uma job notificando o locador sobre o cancelamento de locação.
+
+No agendamento da locação, devem ser enviadas as seguintes informações: 
+Quantidade de pessoas, período desejado e identificação do imóvel;
+
+Caso não seja trabalhada a autenticação, realizar o envio do id do locatário como parâmetro;
 
 
-- Um serviço de 1 hora, não tem desconto
-- Um serviço de 2 horas, tem desconto de **R$20**💵 
-- Um serviço de 3 horas, tem desconto de **R$40**💵 
+As locações terão por padrão um status que será alterado conforme o processo de locação
 
-O serviço não poderá ser finalizado antes do tempo de duração estipulado
-Caso ultrapasse o tempo de duração do serviço, deverá ser acrescentado um valor de **R$100** por hora.
-O status do serviço é: pendente, em andamento e finalizado. Ex. ao acessar o endpoint de início do serviço, o status mudará para: em andamento, e assim por diante.
+A finalização da estadia pode ser realizada antes da data esperada para saída.
 
-O endpoint para a realização do agendamento, deverá receber todos os atributos com exceção do status. Na realização do agendamento, o CEP deve ser validado, podendo ser feito a partir da API BrasilAPI.
+Fique à vontade para montar algumas estruturas do banco e outras regras de negócio conforme você desejar.
 
-Ao cancelar um agendamento, deverá enviar uma notificação para o anunciante através de uma JoB e salvar em uma tabela de notificações. Deverá ter um endpoint para a consulta das notificações. O cancelamento não poderá ser feito por um anunciante.
-
-Ao final de um dia, deverá ser executada uma command para pegar as estatísticas do dia, como o total recebido, tempo de serviço diário, e quantidade de serviços realizados no período.
-
+Fique a vontade para realização e desenvolvimento de seeders
 
 #### Extras 🕹
 
@@ -73,12 +78,8 @@ Ao final de um dia, deverá ser executada uma command para pegar as estatística
 #### Durante o processo de ambientação é importante que: 📌
 
 - Solicitação de revisão de PRs também deve ser solicitado no canal Back-End da turma, **turma-cate-XX-back-end**
-- O envio de dalies no Slack (canal **turma-cate-XX-back-end**), deverá ser entre 10h e 11h da manhã;
 - Aproveite o máximo o processo, não se preocupe em fazer códigos complexos, faça o simples. Evite se basear em códigos de Pull Requests anteriores, o ato dificulta a remoção de impedimentos e prejudica a identificação de pontos de melhorias.
 - Não se esqueça, o objetivo da ambientação técnica é absorver o máximo possível de técnicas, padrões e conceitos que utilizamos hoje em nossos projetos. Então use nossos projetos como base.
 - Lembre-se que o CATe é o primeiro time que você estará atuando na Atlas, o comportamento de equipe é esperado, se possível interaja com os colegas, auxilie e aprenda com eles. 
-
-
-> “Não é um contra o outro, mas sim, um com o outro.” - **Piter**
 
 ---
