@@ -1,56 +1,58 @@
-## Desafio
+### Desafio 🚀
 
-O desafio consiste em desenvolver uma Application Programming Interface (API) de um sistema de locação de imóveis.
+O desafio consiste em desenvolver uma Application Programming Interface (API), que permita que usuários contratem serviço do anunciante.
 
-Fique à vontade para montar a estrutura do banco conforme você desejar.
+Fique à vontade para montar a estrutura do banco conforme você desejar, somente a tabela schedules será obrigatória.
 
-Para facilitar o desenvolvimento, Seeders e Factories podem ser criadas para verificação das regras de negócio;
+Para facilitar o desenvolvimento, Seeders e Factories podem ser criadas para verificação das regras de negócio.
 
-Nesta API, teremos dois tipos de usuários: Locador e Locatário. Ela também possui os seguintes endpoints:
+A tabela schedules deve conter os atributos: id do contratante, id do anunciante, preço, data do agendamento, duração (somente valores entre 1 e 3), horário de início, horário de término, cep do contratante e status.
 
-- Gerenciamento de imóveis
-    - Listagem
-        - Visualizar lista de imóveis
-        - Visualizar imóvel específico;
-    - Criação
-    - Atualização
-    - Exclusão
-- Realizar Locação;
-- Cancelar Locação;
-- Iniciar estadia;
-- Finalizar estadia;
+A API deverá ter os seguintes endpoints:
 
-A listagem de imóveis podemos realizar filtros por quantidade máxima de pessoas ou valores;
+- Gerenciamento de Anunciantes
+    - Listagem de único anunciante
+    - Listagem de todos os anunciantes
+- Listar horários da agenda do anunciante
+- Consulta de um horário específico da agenda do anunciante
+- Realizar um agendamento
+- Cancelar um agendamento
+- Início do serviço
+- Término do serviço
 
-O locatário pode ver as informações de um imóvel.
+O endpoint de listagem de anunciantes, irá retornar os anunciantes cadastrados no banco de dados da aplicação. A consulta destes anunciantes deve ser adicionada em cache no intervalo de 5 minutos.
 
-A listagem de imóveis, baseadas na consulta devem ter um cacheamento de 5 minutos, já a listagem de imóvel específico, um cacheamento de 10 minutos.
+A consulta de anunciante deve ser cacheada com o intervalo de 10 minutos. Toda alteração de anunciante deve esquecer o cacheamento antigo para receber um novo posteriormente.
 
-Toda alteração de imóvel deve esquecer o cacheamento antigo para receber um novo posteriormente.
+O endpoint de listagem de horários do anunciante, deve realizar um filtro através de uma query parameter para retornar:
 
-O locador pode cadastrar seus imóveis e possui algumas informações obrigatórias como o CEP, descrição e características, valor por diária, quantidade máxima de pessoas e também a quantidade mínima de dias para locação.
+Todos os serviços agendados ou do dia atual e deve retornar somente os horários de um anunciante específico. 
 
-O CEP deve ser validado através de uma comunicação externa com a API do Brasil API.
+Somente o anunciante poderá acessar este endpoint.
 
-[Documentação da API](https://brasilapi.com.br/)
+O endpoint de consulta de horário, deve retornar a duração real do serviço, ou seja, a diferença entre o início e o término. O valor do serviço deverá ser calculado dinamicamente e, o valor por hora custará **R$150**💵.
 
-Essa comunicação externa deve estar protegida através do pacote do Circuit Breaker em casos de indisponibilidade.
+- Um serviço de 1 hora, não tem desconto
+- Um serviço de 2 horas, tem desconto de **R$20**💵
+- Um serviço de 3 horas, tem desconto de **R$40**💵
 
-Tanto o locatário como o locador podem acessar um histórico de locações através da tabela ***locations***. Esta tabela possui alguns campos obrigatórios, são eles: id do imóvel, id do locador, id do locatário, período e preço final.
+O serviço não poderá ser finalizado antes do tempo de duração estipulado
 
-Caso o locatário não queira mais locar o imóvel, ele pode realizar o cancelamento antes da data prevista, ao cancelar, deve ser emitida uma job notificando o cancelamento.
+Caso ultrapasse o tempo de duração do serviço, deverá ser acrescentado um valor de R$100 por hora.
 
-No agendamento da locação, as seguintes informações devem ser enviadas:
+O status do serviço é: pendente, em andamento e finalizado. Ex. ao acessar o endpoint de início do serviço, o status mudará para: em andamento, e assim por diante.
 
-Quantidade de pessoas, período desejado e identificação do imóvel. Importante destacar que um agendamento **não** pode sobrescrever o período de outra locação.
+O endpoint para a realização do agendamento, deverá receber todos os atributos com exceção do status. Na realização do agendamento, o CEP deve ser validado através de uma comunicação externa com a API do [BrasilAPI](https://brasilapi.com.br/).
 
-As locações terão por padrão um status que será alterado conforme o processo de locação
+Na comunicação externa, o pacote Circuit Breaker deverá ser implementado.
 
-A finalização da estadia pode ser realizada antes da data esperada para saída.
+Ao cancelar um agendamento, deverá enviar uma notificação para o anunciante através de uma JoB e salvar em uma tabela de notificações. 
 
-Fique à vontade para montar algumas estruturas do banco e outras regras de negócio conforme você desejar.
+Deverá ter um endpoint para a consulta das notificações. O cancelamento não poderá ser feito por um anunciante.
 
-Fique a vontade para realização e desenvolvimento de seeders.
+Ao final de um dia, deverá ser executada uma command para pegar as estatísticas do dia, como o total recebido, tempo de serviço diário, e quantidade de serviços realizados no período.
+
+---
 
 ### É obrigatório ⚠
 
