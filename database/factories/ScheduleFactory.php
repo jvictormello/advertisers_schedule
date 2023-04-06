@@ -24,19 +24,22 @@ class ScheduleFactory extends Factory
      */
     public function definition()
     {
+        $fakeDate = $this->faker->dateTimeBetween('+0 days', '3 days');
+        $date = $fakeDate->format('Y-m-d');
+        $startsAt = $fakeDate->format('H:i:s');
+        $duration = $this->faker->numberBetween(1, 3);
+        $finishesAt = $fakeDate->modify('+ '.$duration.' hours')->format('H:i:s');
+
         return [
             'advertiser_id' = Advertiser::first()->id,
             'contractor_id' = Contractor::first()->id,
             'price' => $this->faker->randomFloat(2),
             'contractor_zip_code' => '80420-200',
             'status_id' => Status::first()->id,
-            'date' => $this->faker->date(),
-            'starts_at' => $this->faker->time(),
-            'finishes_at' => $this->faker->time(),
-            'duration' => $this->faker->numberBetween(1, 3),
-            'started_at',
-            'finished_at',
-            'amount',
+            'date' => $date,
+            'starts_at' => $startsAt,
+            'finishes_at' => $finishesAt,
+            'duration' => $duration,
         ];
     }
 }
