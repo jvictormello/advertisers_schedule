@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Enums\SchedulesStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'status' => SchedulesStatus::class
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +24,7 @@ class Schedule extends Model
         'contractor_id',
         'price',
         'contractor_zip_code',
-        'status_id',
+        'status',
         'date',
         'starts_at',
         'finishes_at',

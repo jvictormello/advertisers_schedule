@@ -35,7 +35,6 @@ class ScheduleFactory extends Factory
             'contractor_id' = Contractor::first()->id,
             'price' => $this->faker->randomFloat(2),
             'contractor_zip_code' => '80420-200',
-            'status_id' => Status::first()->id,
             'date' => $date,
             'starts_at' => $startsAt,
             'finishes_at' => $finishesAt,
