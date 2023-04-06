@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSchudulesTable extends Migration
+class CreateSchedulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +14,12 @@ class CreateSchudulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('schudules', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->integer('advertiser_id');
             $table->integer('contractor_id');
             $table->float('price', 8, 2);
-            $table->string('contractor_zip_code', 8, 2);
+            $table->string('contractor_zip_code');
             $table->string('status')->default(SchedulesStatus::Pending);
             $table->date('date');
             $table->time('starts_at');
@@ -39,6 +39,6 @@ class CreateSchudulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schudules');
+        Schema::dropIfExists('schedules');
     }
 }
