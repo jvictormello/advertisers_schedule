@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\SchedulesStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +19,7 @@ class CreateSchedulesTable extends Migration
             $table->integer('contractor_id');
             $table->float('price', 8, 2);
             $table->string('contractor_zip_code');
-            $table->string('status')->default(SchedulesStatus::Pending);
+            $table->string('status')->default('Pendente');
             $table->date('date');
             $table->time('starts_at');
             $table->time('finishes_at');
