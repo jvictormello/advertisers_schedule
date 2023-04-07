@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Enums\SchedulesStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Schedule extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $casts = [
         'status' => SchedulesStatus::class
