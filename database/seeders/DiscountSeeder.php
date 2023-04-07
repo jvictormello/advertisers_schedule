@@ -14,8 +14,8 @@ class DiscountSeeder extends Seeder
      */
     public function run()
     {
-        Discount::factory()->oneHour()->create();
-        Discount::factory()->twoHours()->create();
-        Discount::factory()->threeHours()->create();
+        Discount::factory()->create(['hours' => 1, 'amount' => 0.00]);
+        Discount::factory()->create(['hours' => 2, 'amount' => 20.00]);
+        Discount::factory()->create(['hours' => 3, 'amount' => 40.00]);
     }
 }

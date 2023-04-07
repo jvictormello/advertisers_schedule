@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Overtime;
+use App\Models\Advertiser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OvertimeFactory extends Factory
@@ -22,7 +23,7 @@ class OvertimeFactory extends Factory
     public function definition()
     {
         return [
-            'advertiser_id' => Overtime::first()->id,
+            'advertiser_id' => Advertiser::first()->id,
             'amount' => 100.00,
         ];
     }

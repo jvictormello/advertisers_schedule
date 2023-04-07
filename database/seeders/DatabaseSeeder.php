@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ContractorSeeder::class,
-            NotificationSeeder::class,
             AdvertiserSeeder::class,
             PriceSeeder::class,
             DiscountSeeder::class,
             OvertimeSeeder::class,
             ScheduleSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }
