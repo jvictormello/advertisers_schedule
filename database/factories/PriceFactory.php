@@ -24,7 +24,7 @@ class PriceFactory extends Factory
     {
         return [
             'advertiser_id' => Advertiser::first()->id,
-            'price_per_hour' => 150.00,
+            'amount' => 150.00,
         ];
     }
 }

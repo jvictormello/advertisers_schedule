@@ -16,6 +16,6 @@ class Price extends Model
      */
     protected $fillable = [
         'advertiser_id',
-        'price_per_hour',
+        'amount',
     ];
 }

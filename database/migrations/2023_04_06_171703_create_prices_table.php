@@ -16,7 +16,7 @@ class CreatePricesTable extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->id();
             $table->integer('advertiser_id');
-            $table->float('price_per_hour', 8, 2);
+            $table->float('amount', 8, 2);
             $table->timestamps();
         });
     }
