@@ -18,4 +18,12 @@ class Overtime extends Model
         'advertiser_id',
         'amount',
     ];
+
+    /**
+     * Get the advertiser that owns the overtime.
+     */
+    public function advertiser()
+    {
+        return $this->belongsTo(Advertiser::class);
+    }
 }

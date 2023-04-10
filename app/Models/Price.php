@@ -18,4 +18,12 @@ class Price extends Model
         'advertiser_id',
         'amount',
     ];
+
+    /**
+     * Get the advertiser that owns the price.
+     */
+    public function advertiser()
+    {
+        return $this->belongsTo(Advertiser::class);
+    }
 }

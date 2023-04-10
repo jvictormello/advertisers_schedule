@@ -35,4 +35,28 @@ class Schedule extends Model
         'finished_at',
         'amount',
     ];
+
+    /**
+     * Get the advertiser that owns the schedule.
+     */
+    public function advertiser()
+    {
+        return $this->belongsTo(Advertiser::class);
+    }
+
+    /**
+     * Get the contractor that owns the schedule.
+     */
+    public function contractor()
+    {
+        return $this->belongsTo(Contractor::class);
+    }
+
+    /**
+     * Get the notifications for the schedule.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

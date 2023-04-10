@@ -18,4 +18,12 @@ class Notification extends Model
         'schedule_id',
         'message',
     ];
+
+    /**
+     * Get the schedule that owns the notification.
+     */
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
 }

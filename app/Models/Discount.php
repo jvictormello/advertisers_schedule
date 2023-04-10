@@ -19,4 +19,12 @@ class Discount extends Model
         'hours',
         'amount',
     ];
+
+    /**
+     * Get the advertiser that owns the discount.
+     */
+    public function advertiser()
+    {
+        return $this->belongsTo(Advertiser::class);
+    }
 }

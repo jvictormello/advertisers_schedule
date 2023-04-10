@@ -21,4 +21,12 @@ class Contractor extends Model
         'password',
         'zip_code',
     ];
+
+    /**
+     * Get the schedules for the contractor.
+     */
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
