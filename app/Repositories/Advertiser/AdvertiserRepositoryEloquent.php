@@ -14,5 +14,4 @@ class AdvertiserRepositoryEloquent extends BaseRepositoryEloquent implements Adv
         $this->model = $advertiser;
     }
 
-    // Implementar as funções, exceto as funções do BaseRepository
 }
