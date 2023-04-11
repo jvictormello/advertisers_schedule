@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Advertiser;
 
 use App\Services\Advertiser\AdvertiserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
-class AdvertiserTest extends TestCase
+class AdvertiserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -45,13 +45,16 @@ class AdvertiserTest extends TestCase
     {
         $response = $this->get('api/advertisers/')->assertStatus(Response::HTTP_OK);
         
-        $cachedSearch = Cache::store('redis')->get(AdvertiserService::REDIS_KEY_GET_ALL_ADVERTISERS);
+        $cacheKey = AdvertiserService::REDIS_KEY_GET_ALL_ADVERTISERS;
+        $cachedSearch = Cache::store('redis')->get($cacheKey);
 
         $this->assertNotNull($cachedSearch);
         $this->assertEquals(2, count($cachedSearch));
         foreach ($response->getData() as $advertiser) {
             $this->assertTrue(in_array((array)$advertiser, $cachedSearch));
         }
+
+        $this->cleanCache($cacheKey);
     }
     
     /**
@@ -75,10 +78,13 @@ class AdvertiserTest extends TestCase
     {
         $response = $this->get('api/advertisers/'.$this->advertiser1->id)->assertStatus(Response::HTTP_OK);
         
-        $cachedSearch = Cache::store('redis')->get(AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id);
+        $cacheKey = AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id;
+        $cachedSearch = Cache::store('redis')->get($cacheKey);
 
         $this->assertNotNull($cachedSearch);
         $this->assertEmpty(array_diff($this->advertiser1->toArray(), $cachedSearch->toArray()));
+        
+        $this->cleanCache($cacheKey);
     }
 
     /**
@@ -90,7 +96,8 @@ class AdvertiserTest extends TestCase
     {
         $this->get('api/advertisers/'.$this->advertiser1->id)->assertStatus(Response::HTTP_OK);
         
-        $cachedSearch = Cache::store('redis')->get(AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id);
+        $cacheKey = AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id;
+        $cachedSearch = Cache::store('redis')->get($cacheKey);
 
         $this->assertNotNull($cachedSearch);
         $this->assertEmpty(array_diff($this->advertiser1->toArray(), $cachedSearch->toArray()));
@@ -99,10 +106,12 @@ class AdvertiserTest extends TestCase
 
         $this->get('api/advertisers/'.$this->advertiser1->id)->assertStatus(Response::HTTP_OK);
 
-        $cachedSearchAfterUpdate = Cache::store('redis')->get(AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id);
+        $cachedSearchAfterUpdate = Cache::store('redis')->get($cacheKey);
         
         $this->assertNotNull($cachedSearchAfterUpdate);
         $this->assertEmpty(array_diff($this->advertiser1->toArray(), $cachedSearchAfterUpdate->toArray()));
+        
+        $this->cleanCache($cacheKey);
     }
 
     /**
@@ -115,15 +124,20 @@ class AdvertiserTest extends TestCase
         $this->get('api/advertisers/'.$this->advertiser1->id)->assertStatus(Response::HTTP_OK);
         $this->get('api/advertisers/'.$this->advertiser2->id)->assertStatus(Response::HTTP_OK);
         
-        $cachedFirstSearch = Cache::store('redis')->get(AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id);
+        $firstCacheKey = AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser1->id;
+        $cachedFirstSearch = Cache::store('redis')->get($firstCacheKey);
 
         $this->assertNotNull($cachedFirstSearch);
         $this->assertEmpty(array_diff($this->advertiser1->toArray(), $cachedFirstSearch->toArray()));
         
-        $cachedSecondSearch = Cache::store('redis')->get(AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser2->id);
+        $secondCacheKey = AdvertiserService::REDIS_KEY_GET_ADVERTISER_BY_ID.$this->advertiser2->id;
+        $cachedSecondSearch = Cache::store('redis')->get($secondCacheKey);
 
         $this->assertNotNull($cachedSecondSearch);
         $this->assertEmpty(array_diff($this->advertiser2->toArray(), $cachedSecondSearch->toArray()));
+        
+        $this->cleanCache($firstCacheKey);
+        $this->cleanCache($secondCacheKey);
     }
     
     /**
