@@ -33,7 +33,15 @@ class AdvertiserService implements AdvertiserServiceContract
 
     public function getCachedAdvertiserById(int $advertiserId)
     {
-        if ($this->getAdvertiserById($advertiserId) != Cache::store('redis')->get('getCachedAdvertiserById'.$advertiserId)) {
+        $cachedAdvertiser = Cache::store('redis')->get('getCachedAdvertiserById'.$advertiserId);
+        $advertiser = $this->getAdvertiserById($advertiserId);
+
+        // Verify if the searched advertiser is cached and if the attributes are equal
+        if ($cachedAdvertiser 
+            && $advertiser
+            && ($cachedAdvertiser->id == $advertiser->id)
+            && ($advertiser != $cachedAdvertiser)
+        ) {
             Cache::store('redis')->forget('getCachedAdvertiserById'.$advertiserId);
         }
 
