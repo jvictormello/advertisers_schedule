@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Advertiser;
 use App\Services\Advertiser\AdvertiserServiceContract;
 use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdvertiserController extends Controller
 {
@@ -25,8 +25,11 @@ class AdvertiserController extends Controller
     {
         try {
             return response()->json($this->advertiserService->getAllCachedAdvertisers());
+        } catch (ModelNotFoundException $e) {
+            return response()->json($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
-            return response()->json($e->getMessage(), $e->getCode() ? $e->getCode() : 404);
+            $errorCode = $e->getCode() ? $e->getCode() : Response::HTTP_NOT_FOUND;
+            return response()->json($e->getMessage(), $errorCode);
         }
     }
 
