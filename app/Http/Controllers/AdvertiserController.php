@@ -26,8 +26,8 @@ class AdvertiserController extends Controller
         try {
             return response()->json($this->advertiserService->getAllCachedAdvertisers());
         } catch (Exception $e) {
-            $errorCode = $e->getCode() ? $e->getCode() : Response::HTTP_NOT_FOUND;
-            return response()->json($e->getMessage(), $errorCode);
+            $errorCode = $e->getCode() ? $e->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['error' => $e->getMessage()], $errorCode);
         }
     }
 
@@ -42,10 +42,10 @@ class AdvertiserController extends Controller
         try {
             return response()->json($this->advertiserService->getCachedAdvertiserById($id));
         } catch (ModelNotFoundException $e) {
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (Exception $e) {
-            $errorCode = $e->getCode() ? $e->getCode() : Response::HTTP_NOT_FOUND;
-            return response()->json($e->getMessage(), $errorCode);
+            $errorCode = $e->getCode() ? $e->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['error' => $e->getMessage()], $errorCode);
         }
     }
 }
