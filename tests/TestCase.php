@@ -15,7 +15,8 @@ abstract class TestCase extends BaseTestCase
         $this->withoutExceptionHandling();
     }
 
-    public function createAdvertisers($args = []) {
+    public function createAdvertisers($args = [])
+    {
         return Advertiser::factory()->create($args);
     }
 }
