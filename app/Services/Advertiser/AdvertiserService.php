@@ -33,7 +33,7 @@ class AdvertiserService implements AdvertiserServiceContract
 
     public function getAdvertiserById(int $advertiserId)
     {
-        return $this->advertiserRepository->getById($advertiserId); 
+        return $this->advertiserRepository->getById($advertiserId);
     }
 
     public function getCachedAdvertiserById(int $advertiserId)
@@ -42,7 +42,7 @@ class AdvertiserService implements AdvertiserServiceContract
         $advertiser = $this->getAdvertiserById($advertiserId);
 
         // Verify if the searched advertiser is cached and if the attributes are equal
-        if ($cachedAdvertiser 
+        if ($cachedAdvertiser
             && $advertiser
             && ($cachedAdvertiser->id == $advertiser->id)
             && ($advertiser != $cachedAdvertiser)
