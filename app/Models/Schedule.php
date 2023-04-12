@@ -12,9 +12,9 @@ class Schedule extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $casts = [
-        'status' => SchedulesStatus::class
-    ];
+    const STATUS_PENDING = 'Pendente';
+    const STATUS_IN_PROGRESS = 'Em Andamento';
+    const STATUS_FINISHED = 'Finalizado';
 
     /**
      * The attributes that are mass assignable.
