@@ -13,5 +13,5 @@ Route::post('login/contractor', [AuthenticationController::class, 'loginContract
 Route::get('advertisers/test', [AdvertiserController::class, 'test'])->middleware('auth.advertisers');
 Route::resource('advertisers', AdvertiserController::class)->only(['index', 'show']);
 
-# ScheduleControlle
+# ScheduleController
 Route::resource('schedules', ScheduleController::class)->only(['index'])->middleware('auth.advertisers');
