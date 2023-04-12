@@ -3,6 +3,9 @@
 namespace App\Services\Schedule;
 
 use App\Repositories\Schedule\ScheduleRepositoryContract;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleService implements ScheduleServiceContract
 {
@@ -13,13 +16,11 @@ class ScheduleService implements ScheduleServiceContract
         $this->scheduleRepository = $scheduleRepository;
     }
 
-    public function getAllSchedules()
+    public function getAllSchedulesByAdvertiserIdAndFilters(array $filters = [])
     {
-        return $this->scheduleRepository->all()->toArray();
-    }
-
-    public function getScheduleById(int $scheduleId)
-    {
-        return $this->scheduleRepository->getById($scheduleId);
+        if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
+            throw new Exception('Not authorized', Response::HTTP_UNAUTHORIZED);
+        }
+        return $this->scheduleRepository->allSchedulesByAdvertiserIdAndFilters(Auth::guard('advertisers')->user()->id, $filters)->get();
     }
 }

@@ -20,10 +20,12 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            return response()->json($this->scheduleService->getAllSchedules());
+            $request->validate(['date' => 'date_format:Y-m-d']);
+            $filters = $request->only(['date', 'status', 'contractor_id']);
+            return response()->json($this->scheduleService->getAllSchedulesByAdvertiserIdAndFilters($filters));
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['error' => $exception->getMessage()], $errorCode);

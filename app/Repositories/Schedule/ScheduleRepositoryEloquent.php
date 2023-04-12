@@ -14,4 +14,12 @@ class ScheduleRepositoryEloquent extends BaseRepositoryEloquent implements Sched
         $this->model = $schedule;
     }
 
+    public function allSchedulesByAdvertiserIdAndFilters(int $advertiserId, array $filters)
+    {
+        $queryBuilder = $this->model->where('advertiser_id', $advertiserId);
+        foreach ($filters as $filterName => $filterValue) {
+            $queryBuilder = $queryBuilder->where($filterName, $filterValue);
+        }
+        return $queryBuilder;
+    }
 }
