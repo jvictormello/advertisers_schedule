@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Services\Schedule\ScheduleServiceContract;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
+    protected $scheduleService;
+
+    public function __construct(ScheduleServiceContract $scheduleServiceContract)
+    {
+        $this->scheduleService = $scheduleServiceContract;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class ScheduleController extends Controller
     public function index()
     {
         try {
-            return response()->json(['response' => 'OK'], 200);
+            return response()->json($this->scheduleService->getAllSchedules());
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['error' => $exception->getMessage()], $errorCode);
