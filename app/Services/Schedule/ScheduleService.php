@@ -21,6 +21,9 @@ class ScheduleService implements ScheduleServiceContract
         if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
             throw new Exception('Not authorized', Response::HTTP_UNAUTHORIZED);
         }
-        return $this->scheduleRepository->allSchedulesByAdvertiserIdAndFilters(Auth::guard('advertisers')->user()->id, $filters)->get();
+
+        $advertiserId = Auth::guard('advertisers')->user()->id;
+
+        return $this->scheduleRepository->allSchedulesByAdvertiserIdAndFilters($advertiserId, $filters)->with('contractor')->get();
     }
 }
