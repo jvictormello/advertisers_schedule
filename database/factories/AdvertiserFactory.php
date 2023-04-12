@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Advertiser;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 class AdvertiserFactory extends Factory
 {
@@ -26,7 +27,7 @@ class AdvertiserFactory extends Factory
             'email' => $this->faker->unique()->email,
             'username' => $this->faker->unique()->userName,
             'login' => $this->faker->unique()->userName,
-            'password' => $this->faker->password(),
+            'password' => Hash::make('abcd1234'),
             'profile_description' => $this->faker->paragraph(),
         ];
     }
