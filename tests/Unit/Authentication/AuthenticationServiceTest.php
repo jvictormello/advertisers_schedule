@@ -38,9 +38,13 @@ class AuthenticationServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        $response = $this->authenticationService->loginAdvertiser($credentials);
+        try {
+            $response = $this->authenticationService->loginAdvertiser($credentials);
 
-        $this->assertNotNull($response['access_token']);
+            $this->assertNotNull($response['access_token']);
+        } catch (Exception $exception) {
+            $this->assertNull($exception);
+        }
     }
 
     /**
@@ -55,9 +59,13 @@ class AuthenticationServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        $response = $this->authenticationService->loginContractor($credentials);
+        try {
+            $response = $this->authenticationService->loginContractor($credentials);
 
-        $this->assertNotNull($response['access_token']);
+            $this->assertNotNull($response['access_token']);
+        } catch (Exception $exception) {
+            $this->assertNull($exception);
+        }
     }
 
     /**
@@ -76,7 +84,7 @@ class AuthenticationServiceTest extends TestCase
             $response = $this->authenticationService->loginAdvertiser($credentials);
             $this->assertTrue(false);
         } catch (Exception $exception) {
-            $this->assertTrue(true);
+            $this->assertNotNull($exception);
         }
     }
 
@@ -96,7 +104,7 @@ class AuthenticationServiceTest extends TestCase
             $response = $this->authenticationService->loginContractor($credentials);
             $this->assertTrue(false);
         } catch (Exception $exception) {
-            $this->assertTrue(true);
+            $this->assertNotNull($exception);
         }
     }
 }
