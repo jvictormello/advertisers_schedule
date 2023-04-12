@@ -14,7 +14,12 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            return response()->json(['response' => 'OK'], 200);
+        } catch (Exception $exception) {
+            $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['error' => $exception->getMessage()], $errorCode);
+        }
     }
 
     /**
