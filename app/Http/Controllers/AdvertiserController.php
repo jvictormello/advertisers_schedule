@@ -49,6 +49,11 @@ class AdvertiserController extends Controller
         }
     }
 
+    /**
+     * Just a test endpoint.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function test() {
         try {
             return response()->json(['response' => 'OK'], 200);
