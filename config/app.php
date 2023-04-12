@@ -180,12 +180,15 @@ return [
          * Repositories Service Providers
          */
         App\Providers\AdvertiserRepositoryServiceProvider::class,
-        App\Providers\AuthenticationServiceServiceProvider::class,
+        App\Providers\ScheduleRepositoryServiceProvider::class,
+
 
         /**
          * Services Service Providers
          */
         App\Providers\AdvertiserServiceServiceProvider::class,
+        App\Providers\AuthenticationServiceServiceProvider::class,
+        App\Providers\ScheduleServiceServiceProvider::class,
 
     ],
 
