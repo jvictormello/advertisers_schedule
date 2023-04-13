@@ -4,6 +4,7 @@ namespace Tests\Unit\Schedule;
 
 use App\Models\Advertiser;
 use App\Models\Contractor;
+use App\Models\Schedule;
 use App\Services\Authentication\AuthenticationServiceContract;
 use App\Services\Schedule\ScheduleServiceContract;
 use Database\Seeders\DatabaseSeeder;
@@ -83,7 +84,7 @@ class ScheduleServiceTest extends TestCase
             $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
         } catch (Exception $exception) {
             $this->assertNotNull($exception);
-            $this->assertEquals('Not authorized', $exception->getMessage());
+            $this->assertEquals('Unauthorized', $exception->getMessage());
             $this->assertEquals(Response::HTTP_UNAUTHORIZED, $exception->getCode());
         }
     }
@@ -99,8 +100,67 @@ class ScheduleServiceTest extends TestCase
             $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
         } catch (Exception $exception) {
             $this->assertNotNull($exception);
-            $this->assertEquals('Not authorized', $exception->getMessage());
+            $this->assertEquals('Unauthorized', $exception->getMessage());
             $this->assertEquals(Response::HTTP_UNAUTHORIZED, $exception->getCode());
+        }
+    }
+
+    // hhaha
+    /**
+     * Test deleteSchedule method passing a pending schedule.
+     *
+     * @return void
+     */
+    public function test_delete_schedule_method_passing_a_pending_schedule()
+    {
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_PENDING]);
+
+        $deleted = false;
+        try {
+            $this->scheduleService->deleteSchedule($schedule);
+            $deleted = true;
+        } catch (Exception $exception) {
+            $this->assertNull($exception);
+        }
+
+        $this->assertTrue($deleted);
+    }
+
+    /**
+     * Test deleteSchedule method passing an in progress schedule.
+     *
+     * @return void
+     */
+    public function test_delete_schedule_method_passing_an_in_progress_schedule()
+    {
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_IN_PROGRESS]);
+
+        $deleted = false;
+        try {
+            $this->scheduleService->deleteSchedule($schedule);
+            $deleted = true;
+        } catch (Exception $exception) {
+            $this->assertNotNull($exception);
+            $this->assertFalse($deleted);
+        }
+    }
+
+    /**
+     * Test deleteSchedule method passing a finished schedule.
+     *
+     * @return void
+     */
+    public function test_delete_schedule_method_passing_a_finished_schedule()
+    {
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
+
+        $deleted = false;
+        try {
+            $this->scheduleService->deleteSchedule($schedule);
+            $deleted = true;
+        } catch (Exception $exception) {
+            $this->assertNotNull($exception);
+            $this->assertFalse($deleted);
         }
     }
 }

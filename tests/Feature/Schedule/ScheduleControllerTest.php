@@ -4,6 +4,7 @@ namespace Tests\Feature\Schedule;
 
 use App\Models\Advertiser;
 use App\Models\Contractor;
+use App\Models\Schedule;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ class ScheduleControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $advertiser1;
+    private $advertiser;
     private $contractor;
     private $testPassword;
     private $fakeJwtToken;
@@ -22,7 +23,7 @@ class ScheduleControllerTest extends TestCase
     {
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
-        $this->advertiser1 = Advertiser::first();
+        $this->advertiser = Advertiser::first();
         $this->contractor = Contractor::first();
         $this->testPassword = 'abcd1234';
         $this->fakeJwtToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
@@ -41,7 +42,7 @@ class ScheduleControllerTest extends TestCase
     public function test_advertiser_tries_to_get_all_the_schedules()
     {
         $authBody = [
-            'login' => $this->advertiser1->login,
+            'login' => $this->advertiser->login,
             'password' => $this->testPassword
         ];
         $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
@@ -54,7 +55,7 @@ class ScheduleControllerTest extends TestCase
 
         $advertiser1IsTheOwner = true;
         foreach ($response->getData() as $schedule) {
-            if ($schedule->advertiser_id != $this->advertiser1->id) {
+            if ($schedule->advertiser_id != $this->advertiser->id) {
                 $advertiser1IsTheOwner = false;
             }
         }
@@ -105,5 +106,107 @@ class ScheduleControllerTest extends TestCase
             'Authorization' => $this->fakeJwtToken,
             'X-Requested-With' => 'XMLHttpRequest',
         ])->get('api/schedules')->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Test logged contractor tries to cancel a pending schedule.
+     *
+     * @return void
+     */
+    public function test_contractor_tries_to_cancel_a_pending_schedule()
+    {
+        $authBody = [
+            'login' => $this->contractor->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $schedule = $this->createSchedules();
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->delete('api/schedules/'.$schedule->id)->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * Test logged advertiser tries to cancel a pending schedule.
+     *
+     * @return void
+     */
+    public function test_advertiser_tries_to_cancel_a_pending_schedule()
+    {
+        $authBody = [
+            'login' => $this->advertiser->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $schedule = $this->createSchedules();
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->delete('api/schedules/'.$schedule->id)->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Test not logged user tries to cancel a pending schedule.
+     *
+     * @return void
+     */
+    public function test_not_logged_user_tries_to_cancel_a_pending_schedule()
+    {
+        $schedule = $this->createSchedules();
+
+        $this->withHeaders([
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->delete('api/schedules/'.$schedule->id)->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Test logged contractor tries to cancel an in progress schedule.
+     *
+     * @return void
+     */
+    public function test_contractor_tries_to_cancel_an_in_progress_schedule()
+    {
+        $authBody = [
+            'login' => $this->contractor->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_IN_PROGRESS]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->delete('api/schedules/'.$schedule->id)->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Test logged contractor tries to cancel a finished schedule.
+     *
+     * @return void
+     */
+    public function test_contractor_tries_to_cancel_a_finished_schedule()
+    {
+        $authBody = [
+            'login' => $this->contractor->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->delete('api/schedules/'.$schedule->id)->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }

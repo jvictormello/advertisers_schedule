@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use App\Services\Schedule\ScheduleServiceContract;
+use Exception;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ScheduleController extends Controller
 {
@@ -28,7 +31,7 @@ class ScheduleController extends Controller
             return response()->json($this->scheduleService->getAllSchedulesByAdvertiserAndFilters($filters));
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return response()->json(['error' => $exception->getMessage()], $errorCode);
+            return response()->json(['message' => $exception->getMessage()], $errorCode);
         }
     }
 
@@ -95,6 +98,12 @@ class ScheduleController extends Controller
      */
     public function destroy(Schedule $schedule)
     {
-        //
+        try {
+            $this->scheduleService->deleteSchedule($schedule);
+            return response()->json(['message' => 'Schedule canceled'], Response::HTTP_OK);
+        } catch (Exception $exception) {
+            $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['message' => $exception->getMessage()], $errorCode);
+        }
     }
 }
