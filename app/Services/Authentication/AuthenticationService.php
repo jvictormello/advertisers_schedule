@@ -2,7 +2,7 @@
 
 namespace App\Services\Authentication;
 
-use Exception;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticationService implements AuthenticationServiceContract
@@ -10,7 +10,7 @@ class AuthenticationService implements AuthenticationServiceContract
     public function loginAdvertiser(array $credentials)
     {
         if (!$token = auth('advertisers')->setTTl(6*60)->attempt($credentials)) {
-            throw new Exception('Not authorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Not authorized', Response::HTTP_UNAUTHORIZED);
         }
 
         return [
@@ -24,7 +24,7 @@ class AuthenticationService implements AuthenticationServiceContract
     public function loginContractor(array $credentials)
     {
         if (!$token = auth('contractors')->setTTl(6*60)->attempt($credentials)) {
-            throw new Exception('Not authorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Not authorized', Response::HTTP_UNAUTHORIZED);
         }
 
         return [

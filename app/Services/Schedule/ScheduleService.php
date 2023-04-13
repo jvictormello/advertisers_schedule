@@ -3,8 +3,8 @@
 namespace App\Services\Schedule;
 
 use App\Repositories\Schedule\ScheduleRepositoryContract;
-use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleService implements ScheduleServiceContract
@@ -19,7 +19,7 @@ class ScheduleService implements ScheduleServiceContract
     public function getAllSchedulesByAdvertiserAndFilters(array $filters = [])
     {
         if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
-            throw new Exception('Not authorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Not authorized', Response::HTTP_UNAUTHORIZED);
         }
 
         $advertiserId = Auth::guard('advertisers')->user()->id;
