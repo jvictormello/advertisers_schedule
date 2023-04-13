@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Contractor;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 class ContractorFactory extends Factory
 {
@@ -25,7 +26,7 @@ class ContractorFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->email,
             'login' => $this->faker->unique()->userName,
-            'password' => $this->faker->password(),
+            'password' => Hash::make('abcd1234'),
             'zip_code' => '80420-200',
         ];
     }

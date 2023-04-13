@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -179,11 +180,15 @@ return [
          * Repositories Service Providers
          */
         App\Providers\AdvertiserRepositoryServiceProvider::class,
-        
+        App\Providers\ScheduleRepositoryServiceProvider::class,
+
+
         /**
          * Services Service Providers
          */
         App\Providers\AdvertiserServiceServiceProvider::class,
+        App\Providers\AuthenticationServiceServiceProvider::class,
+        App\Providers\ScheduleServiceServiceProvider::class,
 
     ],
 

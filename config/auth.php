@@ -41,9 +41,15 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
+        'advertisers' => [
+            'driver' => 'jwt',
+            'provider' => 'advertisers',
+            'hash' => false,
+        ],
+
+        'contractors' => [
+            'driver' => 'jwt',
+            'provider' => 'contractors',
             'hash' => false,
         ],
     ],
@@ -69,6 +75,14 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'advertisers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Advertiser::class,
+        ],
+        'contractors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Contractor::class,
         ],
 
         // 'users' => [
