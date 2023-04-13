@@ -53,14 +53,14 @@ class ScheduleControllerTest extends TestCase
             'X-Requested-With' => 'XMLHttpRequest',
         ])->get('api/schedules')->assertStatus(Response::HTTP_OK);
 
-        $advertiser1IsTheOwner = true;
+        $advertiserIsTheOwner = true;
         foreach ($response->getData() as $schedule) {
             if ($schedule->advertiser_id != $this->advertiser->id) {
-                $advertiser1IsTheOwner = false;
+                $advertiserIsTheOwner = false;
             }
         }
 
-        $this->assertTrue($advertiser1IsTheOwner);
+        $this->assertTrue($advertiserIsTheOwner);
     }
 
     /**
