@@ -26,6 +26,9 @@ class NotificationService implements NotificationServiceContract
         if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
             throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
-        return $this->notificationRepository->getAllByAdvertiserId(1)->with('schedule')->get();
+
+        $advertiserId = Auth::guard('advertisers')->user()->id;
+
+        return $this->notificationRepository->getAllByAdvertiserId($advertiserId)->with('schedule')->get();
     }
 }
