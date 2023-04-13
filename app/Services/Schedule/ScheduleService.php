@@ -40,8 +40,7 @@ class ScheduleService implements ScheduleServiceContract
         }
 
         if ($this->scheduleRepository->deleteSchedule($schedule->id)) {
-            // I'm going to let this command with the dispatchSync instead of dispacth because it's easier to test
-            SendCanceledScheduleNotification::dispatchSync($this->notificationService, $schedule);
+            SendCanceledScheduleNotification::dispatch($this->notificationService, $schedule);
         }
     }
 
