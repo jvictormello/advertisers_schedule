@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Authentication;
 
-use App\Models\Advertiser;
 use App\Services\Authentication\AuthenticationServiceContract;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
