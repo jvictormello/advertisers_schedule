@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthenticationFormRequest;
 use App\Services\Authentication\AuthenticationServiceContract;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticationController extends Controller
@@ -21,12 +23,15 @@ class AuthenticationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function loginAdvertiser(Request $request) {
+    public function loginAdvertiser(AuthenticationFormRequest $request) {
         try {
+            $request->validated();
             $credentials = $request->only('login', 'password');
             $auth = $this->authenticationService->loginAdvertiser($credentials);
 
-            return response()->json($auth, 200);
+            return response()->json($auth, Response::HTTP_OK);
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['message' => $exception->getMessage()], $errorCode);
@@ -38,12 +43,15 @@ class AuthenticationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function loginContractor(Request $request) {
+    public function loginContractor(AuthenticationFormRequest $request) {
         try {
+            $request->validated();
             $credentials = $request->only('login', 'password');
             $auth = $this->authenticationService->loginContractor($credentials);
 
-            return response()->json($auth, 200);
+            return response()->json($auth, Response::HTTP_OK);
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['message' => $exception->getMessage()], $errorCode);

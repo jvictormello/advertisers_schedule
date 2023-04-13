@@ -3,8 +3,9 @@
 namespace Tests\Unit\Authentication;
 
 use App\Services\Authentication\AuthenticationServiceContract;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class AuthenticationServiceTest extends TestCase
@@ -37,13 +38,9 @@ class AuthenticationServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        try {
-            $response = $this->authenticationService->loginAdvertiser($credentials);
+        $response = $this->authenticationService->loginAdvertiser($credentials);
 
-            $this->assertNotNull($response['access_token']);
-        } catch (Exception $exception) {
-            $this->assertNull($exception);
-        }
+        $this->assertNotNull($response['access_token']);
     }
 
     /**
@@ -58,13 +55,9 @@ class AuthenticationServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        try {
-            $response = $this->authenticationService->loginContractor($credentials);
+        $response = $this->authenticationService->loginContractor($credentials);
 
-            $this->assertNotNull($response['access_token']);
-        } catch (Exception $exception) {
-            $this->assertNull($exception);
-        }
+        $this->assertNotNull($response['access_token']);
     }
 
     /**
@@ -79,12 +72,10 @@ class AuthenticationServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        try {
-            $response = $this->authenticationService->loginAdvertiser($credentials);
-            $this->assertTrue(false);
-        } catch (Exception $exception) {
-            $this->assertNotNull($exception);
-        }
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->authenticationService->loginAdvertiser($credentials);
     }
 
     /**
@@ -99,11 +90,9 @@ class AuthenticationServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        try {
-            $response = $this->authenticationService->loginContractor($credentials);
-            $this->assertTrue(false);
-        } catch (Exception $exception) {
-            $this->assertNotNull($exception);
-        }
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->authenticationService->loginContractor($credentials);
     }
 }

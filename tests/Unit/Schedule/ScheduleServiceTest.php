@@ -9,8 +9,8 @@ use App\Services\Authentication\AuthenticationServiceContract;
 use App\Services\Schedule\ScheduleServiceContract;
 use Database\Seeders\DatabaseSeeder;
 use Auth;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -47,22 +47,18 @@ class ScheduleServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        try {
-            $this->authenticationService->loginAdvertiser($credentials);
-            Auth::guard('advertisers')->attempt($credentials);
+        $this->authenticationService->loginAdvertiser($credentials);
+        Auth::guard('advertisers')->attempt($credentials);
 
-            $schedule = $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
+        $schedule = $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
 
-            $advertiser1IsTheOwner = true;
-            foreach ($schedule as $schedule) {
-                if ($schedule->advertiser_id != $this->advertiser1->id) {
-                    $advertiser1IsTheOwner = false;
-                }
+        $advertiser1IsTheOwner = true;
+        foreach ($schedule as $schedule) {
+            if ($schedule->advertiser_id != $this->advertiser1->id) {
+                $advertiser1IsTheOwner = false;
             }
-            $this->assertTrue($advertiser1IsTheOwner);
-        } catch (Exception $exception) {
-            $this->assertNull($exception);
         }
+        $this->assertTrue($advertiser1IsTheOwner);
     }
 
     /**
@@ -77,16 +73,13 @@ class ScheduleServiceTest extends TestCase
             'password' => $this->testPassword
         ];
 
-        try {
-            $this->authenticationService->loginContractor($credentials);
-            Auth::guard('contractors')->attempt($credentials);
+        $this->authenticationService->loginContractor($credentials);
+        Auth::guard('contractors')->attempt($credentials);
 
-            $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
-        } catch (Exception $exception) {
-            $this->assertNotNull($exception);
-            $this->assertEquals('Unauthorized', $exception->getMessage());
-            $this->assertEquals(Response::HTTP_UNAUTHORIZED, $exception->getCode());
-        }
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
     }
 
     /**
@@ -96,13 +89,10 @@ class ScheduleServiceTest extends TestCase
      */
     public function test_get_all_schedules_by_advertiser_method_with_not_logged()
     {
-        try {
-            $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
-        } catch (Exception $exception) {
-            $this->assertNotNull($exception);
-            $this->assertEquals('Unauthorized', $exception->getMessage());
-            $this->assertEquals(Response::HTTP_UNAUTHORIZED, $exception->getCode());
-        }
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
     }
 
     // hhaha
@@ -115,15 +105,8 @@ class ScheduleServiceTest extends TestCase
     {
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_PENDING]);
 
-        $deleted = false;
-        try {
-            $this->scheduleService->deleteSchedule($schedule);
-            $deleted = true;
-        } catch (Exception $exception) {
-            $this->assertNull($exception);
-        }
-
-        $this->assertTrue($deleted);
+        $this->scheduleService->deleteSchedule($schedule);
+        $this->assertTrue(true);
     }
 
     /**
@@ -135,14 +118,10 @@ class ScheduleServiceTest extends TestCase
     {
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_IN_PROGRESS]);
 
-        $deleted = false;
-        try {
-            $this->scheduleService->deleteSchedule($schedule);
-            $deleted = true;
-        } catch (Exception $exception) {
-            $this->assertNotNull($exception);
-            $this->assertFalse($deleted);
-        }
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->deleteSchedule($schedule);
     }
 
     /**
@@ -154,13 +133,9 @@ class ScheduleServiceTest extends TestCase
     {
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
 
-        $deleted = false;
-        try {
-            $this->scheduleService->deleteSchedule($schedule);
-            $deleted = true;
-        } catch (Exception $exception) {
-            $this->assertNotNull($exception);
-            $this->assertFalse($deleted);
-        }
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->deleteSchedule($schedule);
     }
 }

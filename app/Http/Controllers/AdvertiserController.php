@@ -56,7 +56,7 @@ class AdvertiserController extends Controller
      */
     public function test() {
         try {
-            return response()->json(['response' => 'OK'], 200);
+            return response()->json(['response' => 'OK'], Reponse::HTTP_OK);
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['message' => $exception->getMessage()], $errorCode);

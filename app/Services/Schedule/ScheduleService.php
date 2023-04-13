@@ -8,6 +8,7 @@ use App\Repositories\Schedule\ScheduleRepositoryContract;
 use App\Services\Notification\NotificationServiceContract;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleService implements ScheduleServiceContract
@@ -24,7 +25,7 @@ class ScheduleService implements ScheduleServiceContract
     public function getAllSchedulesByAdvertiserAndFilters(array $filters = [])
     {
         if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
-            throw new Exception('Unauthorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
         $advertiserId = Auth::guard('advertisers')->user()->id;
@@ -35,7 +36,7 @@ class ScheduleService implements ScheduleServiceContract
     public function deleteSchedule(Schedule $schedule)
     {
         if ($schedule->status != Schedule::STATUS_PENDING) {
-            throw new Exception('Unauthorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
         if ($this->scheduleRepository->deleteSchedule($schedule->id)) {
