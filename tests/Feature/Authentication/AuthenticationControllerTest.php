@@ -70,7 +70,7 @@ class AuthenticationControllerTest extends TestCase
 
         $response = $this->post('api/login/advertiser', $postBody)->assertStatus(Response::HTTP_UNAUTHORIZED);
 
-        $this->assertEquals('Not authorized', $response->getData()->error);
+        $this->assertEquals('Unauthorized', $response->getData()->message);
     }
 
     /**
@@ -87,6 +87,6 @@ class AuthenticationControllerTest extends TestCase
 
         $response = $this->post('api/login/contractor', $postBody)->assertStatus(Response::HTTP_UNAUTHORIZED);
 
-        $this->assertEquals('Not authorized', $response->getData()->error);
+        $this->assertEquals('Unauthorized', $response->getData()->message);
     }
 }

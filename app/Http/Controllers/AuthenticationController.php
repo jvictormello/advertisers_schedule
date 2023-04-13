@@ -29,7 +29,7 @@ class AuthenticationController extends Controller
             return response()->json($auth, 200);
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return response()->json(['error' => $exception->getMessage()], $errorCode);
+            return response()->json(['message' => $exception->getMessage()], $errorCode);
         }
     }
 
@@ -46,7 +46,7 @@ class AuthenticationController extends Controller
             return response()->json($auth, 200);
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return response()->json(['error' => $exception->getMessage()], $errorCode);
+            return response()->json(['message' => $exception->getMessage()], $errorCode);
         }
     }
 }
