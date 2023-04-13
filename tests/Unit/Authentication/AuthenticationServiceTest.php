@@ -73,7 +73,7 @@ class AuthenticationServiceTest extends TestCase
         ];
 
         $this->expectException(UnauthorizedException::class);
-        $this->expectExceptionMessage('Not authorized');
+        $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
         $this->authenticationService->loginAdvertiser($credentials);
     }
@@ -91,7 +91,7 @@ class AuthenticationServiceTest extends TestCase
         ];
 
         $this->expectException(UnauthorizedException::class);
-        $this->expectExceptionMessage('Not authorized');
+        $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
         $this->authenticationService->loginContractor($credentials);
     }

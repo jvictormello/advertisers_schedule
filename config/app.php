@@ -180,6 +180,7 @@ return [
          * Repositories Service Providers
          */
         App\Providers\AdvertiserRepositoryServiceProvider::class,
+        App\Providers\NotificationRepositoryServiceProvider::class,
         App\Providers\ScheduleRepositoryServiceProvider::class,
 
 
@@ -188,6 +189,7 @@ return [
          */
         App\Providers\AdvertiserServiceServiceProvider::class,
         App\Providers\AuthenticationServiceServiceProvider::class,
+        App\Providers\NotificationServiceServiceProvider::class,
         App\Providers\ScheduleServiceServiceProvider::class,
 
     ],

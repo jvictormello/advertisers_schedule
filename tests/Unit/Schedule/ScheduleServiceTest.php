@@ -2,13 +2,16 @@
 
 namespace Tests\Unit\Schedule;
 
+use App\Jobs\SendCanceledScheduleNotification;
 use App\Models\Advertiser;
 use App\Models\Contractor;
+use App\Models\Schedule;
 use App\Services\Authentication\AuthenticationServiceContract;
 use App\Services\Schedule\ScheduleServiceContract;
 use Database\Seeders\DatabaseSeeder;
 use Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -76,7 +79,7 @@ class ScheduleServiceTest extends TestCase
         Auth::guard('contractors')->attempt($credentials);
 
         $this->expectException(UnauthorizedException::class);
-        $this->expectExceptionMessage('Not authorized');
+        $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
         $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
     }
@@ -89,8 +92,59 @@ class ScheduleServiceTest extends TestCase
     public function test_get_all_schedules_by_advertiser_method_with_not_logged()
     {
         $this->expectException(UnauthorizedException::class);
-        $this->expectExceptionMessage('Not authorized');
+        $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
         $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
+    }
+
+    // hhaha
+    /**
+     * Test deleteSchedule method passing a pending schedule.
+     *
+     * @return void
+     */
+    public function test_delete_schedule_method_passing_a_pending_schedule()
+    {
+        Bus::fake();
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_PENDING]);
+
+        $this->scheduleService->deleteSchedule($schedule);
+
+        Bus::assertDispatched(SendCanceledScheduleNotification::class);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Test deleteSchedule method passing an in progress schedule.
+     *
+     * @return void
+     */
+    public function test_delete_schedule_method_passing_an_in_progress_schedule()
+    {
+        Bus::fake();
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_IN_PROGRESS]);
+
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->deleteSchedule($schedule);
+        Bus::assertNothingDispatched();
+    }
+
+    /**
+     * Test deleteSchedule method passing a finished schedule.
+     *
+     * @return void
+     */
+    public function test_delete_schedule_method_passing_a_finished_schedule()
+    {
+        Bus::fake()
+        $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
+
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->deleteSchedule($schedule);
+        Bus::assertNothingDispatched();
     }
 }

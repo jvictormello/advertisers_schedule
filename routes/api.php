@@ -15,3 +15,4 @@ Route::resource('advertisers', AdvertiserController::class)->only(['index', 'sho
 
 # ScheduleController
 Route::resource('schedules', ScheduleController::class)->only(['index'])->middleware('auth.advertisers');
+Route::resource('schedules', ScheduleController::class)->only(['destroy'])->middleware('auth.contractors');

@@ -10,7 +10,7 @@ class AuthenticationService implements AuthenticationServiceContract
     public function loginAdvertiser(array $credentials)
     {
         if (!$token = auth('advertisers')->setTTl(6*60)->attempt($credentials)) {
-            throw new UnauthorizedException('Not authorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
         return [
@@ -24,7 +24,7 @@ class AuthenticationService implements AuthenticationServiceContract
     public function loginContractor(array $credentials)
     {
         if (!$token = auth('contractors')->setTTl(6*60)->attempt($credentials)) {
-            throw new UnauthorizedException('Not authorized', Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
         return [
