@@ -4,5 +4,5 @@ namespace App\Services\Schedule;
 
 interface ScheduleServiceContract
 {
-    public function getAllSchedulesByAdvertiserIdAndFilters(array $filters = []);
+    public function getAllSchedulesByAdvertiserAndFilters(array $filters = []);
 }

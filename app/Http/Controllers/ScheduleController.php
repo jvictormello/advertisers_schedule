@@ -25,7 +25,7 @@ class ScheduleController extends Controller
         try {
             $request->validate(['date' => 'date_format:Y-m-d']);
             $filters = $request->only(['date', 'status', 'contractor_id']);
-            return response()->json($this->scheduleService->getAllSchedulesByAdvertiserIdAndFilters($filters));
+            return response()->json($this->scheduleService->getAllSchedulesByAdvertiserAndFilters($filters));
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['error' => $exception->getMessage()], $errorCode);
