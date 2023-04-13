@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
 use App\Services\Notification\NotificationServiceContract;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Validation\UnauthorizedException;
 
 class NotificationController extends Controller
