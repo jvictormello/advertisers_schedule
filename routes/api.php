@@ -20,3 +20,4 @@ Route::resource('notifications', NotificationController::class)->only(['index'])
 # ScheduleController
 Route::resource('schedules', ScheduleController::class)->only(['index'])->middleware('auth.advertisers');
 Route::resource('schedules', ScheduleController::class)->only(['destroy'])->middleware('auth.contractors');
+Route::put('/schedules/{id}', [ScheduleController::class, 'updateStatus']);

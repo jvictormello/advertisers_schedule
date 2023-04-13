@@ -44,8 +44,8 @@ class ScheduleService implements ScheduleServiceContract
         }
     }
 
-    public function getScheduleById(int $scheduleId)
+    public function updateScheduleStatus(int $scheduleId)
     {
-        $this->scheduleRepository->getById($scheduleId);
+        return true;
     }
 }
