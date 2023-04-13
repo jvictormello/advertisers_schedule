@@ -13,4 +13,12 @@ class NotificationRepositoryEloquent extends BaseRepositoryEloquent implements N
     {
         $this->model = $notification;
     }
+
+    public function getAllByAdvertiserId(int $advertiserId)
+    {
+        $queryBuilder = $this->model->leftJoin('schedules', 'notifications.schedule_id', '=', 'schedules.id');
+        $queryBuilder = $queryBuilder->where('schedules.advertiser_id', $advertiserId);
+
+        return $queryBuilder;
+    }
 }

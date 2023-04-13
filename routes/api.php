@@ -15,7 +15,7 @@ Route::get('advertisers/test', [AdvertiserController::class, 'test'])->middlewar
 Route::resource('advertisers', AdvertiserController::class)->only(['index', 'show']);
 
 # NotificationController
-Route::resource('notifications', NotificationController::class)->only(['index']);
+Route::resource('notifications', NotificationController::class)->only(['index'])->middleware('auth.advertisers');
 
 # ScheduleController
 Route::resource('schedules', ScheduleController::class)->only(['index'])->middleware('auth.advertisers');

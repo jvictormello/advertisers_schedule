@@ -3,6 +3,9 @@
 namespace App\Services\Notification;
 
 use App\Repositories\Notification\NotificationRepositoryContract;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpFoundation\Response;
 
 class NotificationService implements NotificationServiceContract
 {
@@ -20,6 +23,9 @@ class NotificationService implements NotificationServiceContract
 
     public function getAllNotifications()
     {
-        return ['teste' => 'teste'];
+        if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+        return $this->notificationRepository->getAllByAdvertiserId(1)->with('schedule')->get();
     }
 }

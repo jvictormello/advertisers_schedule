@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Notification\NotificationServiceContract;
 use Exception;
 use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpFoundation\Response;
 
 class NotificationController extends Controller
 {
