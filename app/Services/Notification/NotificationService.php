@@ -17,4 +17,9 @@ class NotificationService implements NotificationServiceContract
     {
         $this->notificationRepository->store($notificationData);
     }
+
+    public function getAllNotifications()
+    {
+        return ['teste' => 'teste'];
+    }
 }
