@@ -6,7 +6,6 @@ use App\Jobs\SendCanceledScheduleNotification;
 use App\Models\Schedule;
 use App\Repositories\Schedule\ScheduleRepositoryContract;
 use App\Services\Notification\NotificationServiceContract;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,8 +32,9 @@ class ScheduleService implements ScheduleServiceContract
         return $this->scheduleRepository->allSchedulesByAdvertiserIdAndFilters($advertiserId, $filters)->with('contractor')->get();
     }
 
-    public function deleteSchedule(Schedule $schedule)
+    public function deleteSchedule(int $scheduleId)
     {
+        $schedule = $this->scheduleRepository->getById($scheduleId);
         if ($schedule->status != Schedule::STATUS_PENDING) {
             throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }

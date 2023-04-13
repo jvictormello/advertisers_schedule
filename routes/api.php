@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdvertiserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,9 @@ Route::post('login/contractor', [AuthenticationController::class, 'loginContract
 # AdvertiserController
 Route::get('advertisers/test', [AdvertiserController::class, 'test'])->middleware('auth.advertisers');
 Route::resource('advertisers', AdvertiserController::class)->only(['index', 'show']);
+
+# NotificationController
+Route::resource('notifications', NotificationController::class)->only(['index'])->middleware('auth.advertisers');
 
 # ScheduleController
 Route::resource('schedules', ScheduleController::class)->only(['index'])->middleware('auth.advertisers');

@@ -22,7 +22,7 @@ class ScheduleServiceTest extends TestCase
 
     private $scheduleService;
     private $authenticationService;
-    private $advertiser1;
+    private $advertiser;
     private $contractor;
     private $testPassword;
 
@@ -32,7 +32,7 @@ class ScheduleServiceTest extends TestCase
         $this->scheduleService = app()->make(ScheduleServiceContract::class);
         $this->authenticationService = app()->make(AuthenticationServiceContract::class);
         $this->seed(DatabaseSeeder::class);
-        $this->advertiser1 = Advertiser::first();
+        $this->advertiser = Advertiser::first();
         $this->contractor = Contractor::first();
         $this->testPassword = 'abcd1234';
     }
@@ -45,22 +45,22 @@ class ScheduleServiceTest extends TestCase
     public function test_get_all_schedules_by_advertiser_method_with_advertiser_info()
     {
         $credentials = [
-            'login' => $this->advertiser1->login,
+            'login' => $this->advertiser->login,
             'password' => $this->testPassword
         ];
 
         $this->authenticationService->loginAdvertiser($credentials);
         Auth::guard('advertisers')->attempt($credentials);
 
-        $schedule = $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
+        $schedules = $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
 
-        $advertiser1IsTheOwner = true;
-        foreach ($schedule as $schedule) {
-            if ($schedule->advertiser_id != $this->advertiser1->id) {
-                $advertiser1IsTheOwner = false;
+        $advertiserIsTheOwner = true;
+        foreach ($schedules as $schedule) {
+            if ($schedule->advertiser_id != $this->advertiser->id) {
+                $advertiserIsTheOwner = false;
             }
         }
-        $this->assertTrue($advertiser1IsTheOwner);
+        $this->assertTrue($advertiserIsTheOwner);
     }
 
     /**
@@ -97,7 +97,6 @@ class ScheduleServiceTest extends TestCase
         $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
     }
 
-    // hhaha
     /**
      * Test deleteSchedule method passing a pending schedule.
      *
@@ -108,7 +107,7 @@ class ScheduleServiceTest extends TestCase
         Bus::fake();
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_PENDING]);
 
-        $this->scheduleService->deleteSchedule($schedule);
+        $this->scheduleService->deleteSchedule($schedule->id);
 
         Bus::assertDispatched(SendCanceledScheduleNotification::class);
         $this->assertTrue(true);
@@ -127,7 +126,7 @@ class ScheduleServiceTest extends TestCase
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
-        $this->scheduleService->deleteSchedule($schedule);
+        $this->scheduleService->deleteSchedule($schedule->id);
         Bus::assertNothingDispatched();
     }
 
@@ -138,13 +137,13 @@ class ScheduleServiceTest extends TestCase
      */
     public function test_delete_schedule_method_passing_a_finished_schedule()
     {
-        Bus::fake()
+        Bus::fake();
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
 
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
-        $this->scheduleService->deleteSchedule($schedule);
+        $this->scheduleService->deleteSchedule($schedule->id);
         Bus::assertNothingDispatched();
     }
 }
