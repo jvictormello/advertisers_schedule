@@ -24,4 +24,10 @@ class ScheduleRepositoryEloquent extends BaseRepositoryEloquent implements Sched
 
         return $queryBuilder;
     }
+
+    public function deleteSchedule(int $scheduleId)
+    {
+        $this->updateById(['status' => Schedule::STATUS_FINISHED], $scheduleId);
+        return $this->delete($scheduleId);
+    }
 }
