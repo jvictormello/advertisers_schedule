@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthenticationFormRequest;
 use App\Services\Authentication\AuthenticationServiceContract;
 use Exception;
 use Illuminate\Http\Request;
@@ -22,8 +23,9 @@ class AuthenticationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function loginAdvertiser(Request $request) {
+    public function loginAdvertiser(AuthenticationFormRequest $request) {
         try {
+            $request->validated();
             $credentials = $request->only('login', 'password');
             $auth = $this->authenticationService->loginAdvertiser($credentials);
 
@@ -41,8 +43,9 @@ class AuthenticationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function loginContractor(Request $request) {
+    public function loginContractor(AuthenticationFormRequest $request) {
         try {
+            $request->validated();
             $credentials = $request->only('login', 'password');
             $auth = $this->authenticationService->loginContractor($credentials);
 
