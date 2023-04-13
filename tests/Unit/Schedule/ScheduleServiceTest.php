@@ -108,7 +108,7 @@ class ScheduleServiceTest extends TestCase
         Bus::fake();
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_PENDING]);
 
-        $this->scheduleService->deleteSchedule($schedule);
+        $this->scheduleService->deleteSchedule($schedule->id);
 
         Bus::assertDispatched(SendCanceledScheduleNotification::class);
         $this->assertTrue(true);
@@ -127,7 +127,7 @@ class ScheduleServiceTest extends TestCase
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
-        $this->scheduleService->deleteSchedule($schedule);
+        $this->scheduleService->deleteSchedule($schedule->id);
         Bus::assertNothingDispatched();
     }
 
@@ -138,13 +138,13 @@ class ScheduleServiceTest extends TestCase
      */
     public function test_delete_schedule_method_passing_a_finished_schedule()
     {
-        Bus::fake()
+        Bus::fake();
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
 
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
-        $this->scheduleService->deleteSchedule($schedule);
+        $this->scheduleService->deleteSchedule($schedule->id);
         Bus::assertNothingDispatched();
     }
 }

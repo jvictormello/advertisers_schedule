@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Schedule;
 use App\Services\Schedule\ScheduleServiceContract;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -41,14 +42,16 @@ class ScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Schedule  $schedule
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Schedule $schedule)
+    public function destroy($id)
     {
         try {
-            $this->scheduleService->deleteSchedule($schedule);
+            $this->scheduleService->deleteSchedule($id);
             return response()->json(['message' => 'Schedule canceled'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['message' => $exception->getMessage()], $errorCode);
