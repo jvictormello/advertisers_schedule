@@ -16,6 +16,7 @@ class ScheduleControllerTest extends TestCase
     use RefreshDatabase;
 
     private $advertiser;
+    private $anotherAdvertiser;
     private $contractor;
     private $testPassword;
     private $fakeJwtToken;
@@ -27,6 +28,7 @@ class ScheduleControllerTest extends TestCase
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
         $this->advertiser = Advertiser::first();
+        $this->anotherAdvertiser = $this->createAdvertisers();
         $this->contractor = Contractor::first();
         $this->testPassword = 'abcd1234';
         $this->twoHours = 2;
@@ -46,12 +48,7 @@ class ScheduleControllerTest extends TestCase
      */
     public function test_advertiser_tries_to_get_all_the_schedules()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $response = $this->withHeaders([
             'Authorization' => $jwtToken,
@@ -69,18 +66,13 @@ class ScheduleControllerTest extends TestCase
     }
 
     /**
-     * Test logged contractor tries to get all by another advertiser.
+     * Test logged contractor tries to get all the schedules.
      *
      * @return void
      */
     public function test_contractor_tries_to_get_all_the_schedules()
     {
-        $authBody = [
-            'login' => $this->contractor->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->contractor, 'contractors')->fakeJwtToken;
 
         $this->withHeaders([
             'Authorization' => $jwtToken,
@@ -120,12 +112,7 @@ class ScheduleControllerTest extends TestCase
      */
     public function test_contractor_tries_to_cancel_a_pending_schedule()
     {
-        $authBody = [
-            'login' => $this->contractor->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->contractor, 'contractors')->fakeJwtToken;
 
         $schedule = $this->createSchedules();
 
@@ -142,12 +129,7 @@ class ScheduleControllerTest extends TestCase
      */
     public function test_advertiser_tries_to_cancel_a_pending_schedule()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $schedule = $this->createSchedules();
 
@@ -178,12 +160,7 @@ class ScheduleControllerTest extends TestCase
      */
     public function test_contractor_tries_to_cancel_an_in_progress_schedule()
     {
-        $authBody = [
-            'login' => $this->contractor->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->contractor, 'contractors')->fakeJwtToken;
 
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_IN_PROGRESS]);
 
@@ -200,12 +177,7 @@ class ScheduleControllerTest extends TestCase
      */
     public function test_contractor_tries_to_cancel_a_finished_schedule()
     {
-        $authBody = [
-            'login' => $this->contractor->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->contractor, 'contractors')->fakeJwtToken;
 
         $schedule = $this->createSchedules(['status' => Schedule::STATUS_FINISHED]);
 
@@ -222,12 +194,7 @@ class ScheduleControllerTest extends TestCase
      */
     public function test_advertiser_tries_to_move_a_pending_schedule_to_in_progress()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $date = Carbon::now();
         $startsAt = clone $date;
@@ -251,15 +218,9 @@ class ScheduleControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_another_advertiser_tries_to_move_a_pending_schedule_to_in_progress()
+    public function test_another_logged_advertiser_tries_to_move_a_pending_schedule_to_in_progress()
     {
-        $anotherAdvertiser = $this->createAdvertisers();
-        $authBody = [
-            'login' => $anotherAdvertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->anotherAdvertiser, 'advertisers')->fakeJwtToken;
 
         $date = Carbon::now();
         $startsAt = clone $date;
@@ -279,18 +240,13 @@ class ScheduleControllerTest extends TestCase
     }
 
     /**
-     * Test logged advertiser tries to move an in progress schedule to finished.
+     * Test logged advertiser tries to move in progress schedule to finished.
      *
      * @return void
      */
-    public function test_advertiser_tries_to_move_an_in_progress_schedule_to_finished()
+    public function test_logged_advertiser_tries_to_move_in_progress_schedule_to_finished()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $date = Carbon::now();
         $startsAt = clone $date;
@@ -312,18 +268,13 @@ class ScheduleControllerTest extends TestCase
     }
 
     /**
-     * Test logged advertiser tries to move an in progress schedule to finished with less duration than expected.
+     * Test logged advertiser tries to move in progress schedule to finished with less duration than expected.
      *
      * @return void
      */
-    public function test_advertiser_tries_to_move_an_in_progress_schedule_to_finished_with_less_duration_than_expected()
+    public function test_logged_advertiser_tries_to_move_in_progress_schedule_to_finished_with_less_duration_than_expected()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $date = Carbon::now();
         $startsAt = clone $date;
@@ -349,14 +300,9 @@ class ScheduleControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_advertiser_tries_to_move_a_finished_schedule_to_next_status()
+    public function test_logged_advertiser_tries_to_move_a_finished_schedule_to_next_status()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $date = Carbon::now();
         $startsAt = clone $date;
