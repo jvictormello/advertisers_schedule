@@ -18,7 +18,6 @@ class NotificationServiceTest extends TestCase
     private $notificationService;
     private $advertiser;
     private $contractor;
-    private $testPassword;
 
     public function setUp(): void
     {
@@ -27,7 +26,6 @@ class NotificationServiceTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $this->advertiser = Advertiser::first();
         $this->contractor = Contractor::first();
-        $this->testPassword = 'abcd1234';
     }
 
     /**
