@@ -341,8 +341,7 @@ class ScheduleServiceTest extends TestCase
             "status" => Schedule::STATUS_PENDING,
         ];
 
-        $this->scheduleService->createSchedule($postBody);
-        $this->assertTrue(true);
+        $this->assertNotEmpty($this->scheduleService->createSchedule($postBody));
     }
 
     /**
