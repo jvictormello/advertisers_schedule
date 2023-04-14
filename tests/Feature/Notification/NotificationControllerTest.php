@@ -40,12 +40,7 @@ class NotificationControllerTest extends TestCase
      */
     public function test_advertiser_tries_to_get_the_notifications()
     {
-        $authBody = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
 
         $response = $this->withHeaders([
             'Authorization' => $jwtToken,
@@ -69,12 +64,7 @@ class NotificationControllerTest extends TestCase
      */
     public function test_contractor_tries_to_get_the_notifications()
     {
-        $authBody = [
-            'login' => $this->contractor->login,
-            'password' => $this->testPassword
-        ];
-        $authResponse = $this->post('api/login/contractor', $authBody)->assertStatus(Response::HTTP_OK);
-        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+        $jwtToken = 'Bearer '.$this->be($this->contractor, 'contractors')->fakeJwtToken;
 
         $this->withHeaders([
             'Authorization' => $jwtToken,
