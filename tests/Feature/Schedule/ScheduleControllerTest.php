@@ -5,6 +5,7 @@ namespace Tests\Feature\Schedule;
 use App\Models\Advertiser;
 use App\Models\Contractor;
 use App\Models\Schedule;
+use Carbon\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,8 @@ class ScheduleControllerTest extends TestCase
     private $contractor;
     private $testPassword;
     private $fakeJwtToken;
+    private $twoHours;
+    private $threeHours;
 
     public function setUp(): void
     {
@@ -26,6 +29,8 @@ class ScheduleControllerTest extends TestCase
         $this->advertiser = Advertiser::first();
         $this->contractor = Contractor::first();
         $this->testPassword = 'abcd1234';
+        $this->twoHours = 2;
+        $this->threeHours = 3;
         $this->fakeJwtToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
         eyJpc3MiOiJodHRwOlwvXC9mbS1jYXRlOjgwODBcL2FwaVwvbG9naW5cL2FkdmVydGlz
         ZXIiLCJpYXQiOjE2ODEzMjYyMTMsImV4cCI6MTY4MTM0NzgxMywibmJmIjoxNjgxMzI2
@@ -208,5 +213,167 @@ class ScheduleControllerTest extends TestCase
             'Authorization' => $jwtToken,
             'X-Requested-With' => 'XMLHttpRequest',
         ])->delete('api/schedules/'.$schedule->id)->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Test logged advertiser tries to move a pending schedule to in progress.
+     *
+     * @return void
+     */
+    public function test_advertiser_tries_to_move_a_pending_schedule_to_in_progress()
+    {
+        $authBody = [
+            'login' => $this->advertiser->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $date = Carbon::now();
+        $startsAt = clone $date;
+        $finishesAt = clone $date;
+        $schedule = $this->createSchedules([
+            'date' => $date->format('Y-m-d'),
+            'duration' => $this->threeHours,
+            'starts_at' => $startsAt->format('Y-m-d H:i:s'),
+            'finishes_at' => $finishesAt->addHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'status' => Schedule::STATUS_PENDING,
+        ]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->put('api/schedules/'.$schedule->id.'/update-status')->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * Test another logged advertiser tries to move a pending schedule to in progress.
+     *
+     * @return void
+     */
+    public function test_another_advertiser_tries_to_move_a_pending_schedule_to_in_progress()
+    {
+        $anotherAdvertiser = $this->createAdvertisers();
+        $authBody = [
+            'login' => $anotherAdvertiser->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $date = Carbon::now();
+        $startsAt = clone $date;
+        $finishesAt = clone $date;
+        $schedule = $this->createSchedules([
+            'date' => $date->format('Y-m-d'),
+            'duration' => $this->threeHours,
+            'starts_at' => $startsAt->format('Y-m-d H:i:s'),
+            'finishes_at' => $finishesAt->addHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'status' => Schedule::STATUS_PENDING,
+        ]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->put('api/schedules/'.$schedule->id.'/update-status')->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Test logged advertiser tries to move an in progress schedule to finished.
+     *
+     * @return void
+     */
+    public function test_advertiser_tries_to_move_an_in_progress_schedule_to_finished()
+    {
+        $authBody = [
+            'login' => $this->advertiser->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $date = Carbon::now();
+        $startsAt = clone $date;
+        $startedAt = clone $date;
+        $finishesAt = clone $date;
+        $schedule = $this->createSchedules([
+            'date' => $date->format('Y-m-d'),
+            'duration' => $this->threeHours,
+            'starts_at' => $startsAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'started_at' => $startedAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'finishes_at' => $finishesAt->format('Y-m-d H:i:s'),
+            'status' => Schedule::STATUS_IN_PROGRESS,
+        ]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->put('api/schedules/'.$schedule->id.'/update-status')->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * Test logged advertiser tries to move an in progress schedule to finished with less duration than expected.
+     *
+     * @return void
+     */
+    public function test_advertiser_tries_to_move_an_in_progress_schedule_to_finished_with_less_duration_than_expected()
+    {
+        $authBody = [
+            'login' => $this->advertiser->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $date = Carbon::now();
+        $startsAt = clone $date;
+        $startedAt = clone $date;
+        $finishesAt = clone $date;
+        $schedule = $this->createSchedules([
+            'date' => $date->format('Y-m-d'),
+            'duration' => $this->threeHours,
+            'starts_at' => $startsAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'started_at' => $startedAt->subHours($this->twoHours)->format('Y-m-d H:i:s'),
+            'finishes_at' => $finishesAt->format('Y-m-d H:i:s'),
+            'status' => Schedule::STATUS_IN_PROGRESS,
+        ]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->put('api/schedules/'.$schedule->id.'/update-status')->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+    /**
+     * Test logged advertiser tries to move a finished schedule to next status.
+     *
+     * @return void
+     */
+    public function test_advertiser_tries_to_move_a_finished_schedule_to_next_status()
+    {
+        $authBody = [
+            'login' => $this->advertiser->login,
+            'password' => $this->testPassword
+        ];
+        $authResponse = $this->post('api/login/advertiser', $authBody)->assertStatus(Response::HTTP_OK);
+        $jwtToken = 'Bearer '.$authResponse->getData()->access_token;
+
+        $date = Carbon::now();
+        $startsAt = clone $date;
+        $startedAt = clone $date;
+        $finishesAt = clone $date;
+        $schedule = $this->createSchedules([
+            'date' => $date->format('Y-m-d'),
+            'duration' => $this->threeHours,
+            'starts_at' => $startsAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'started_at' => $startedAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
+            'finishes_at' => $finishesAt->format('Y-m-d H:i:s'),
+            'status' => Schedule::STATUS_FINISHED,
+        ]);
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->put('api/schedules/'.$schedule->id.'/update-status')->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 }
