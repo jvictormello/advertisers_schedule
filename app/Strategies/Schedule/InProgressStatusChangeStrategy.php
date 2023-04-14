@@ -7,8 +7,6 @@ use Carbon\Carbon;
 
 class InProgressStatusChangeStrategy implements ScheduleStatusChangeStrategyContract
 {
-    const MAX_SCHEDULE_DURATION_IN_HOURS = 3;
-
     private $currentDateTime;
     private $startsAtDateTime;
     private $finishesAtDateTime;
@@ -40,7 +38,7 @@ class InProgressStatusChangeStrategy implements ScheduleStatusChangeStrategyCont
     public function getUpdatedAttributesAndValues(Schedule $schedule)
     {
         $currentDurationInHours = $this->startedAtDateTime->diffInHours($this->currentDateTime, false);
-        $overtimeInHours = $this->getOvertimeInHours($currentDurationInHours);
+        $overtimeInHours = $currentDurationInHours > Schedule::MAX_SCHEDULE_DURATION_IN_HOURS ? $currentDurationInHours - Schedule::MAX_SCHEDULE_DURATION_IN_HOURS : Schedule::ZERO_OVERTIME_HOURS;
         $hoursWithNormalPrice = $currentDurationInHours - $overtimeInHours;
 
         // Get the related values from DB using Eloquent
@@ -61,12 +59,5 @@ class InProgressStatusChangeStrategy implements ScheduleStatusChangeStrategyCont
             'status' => $this->getNextAllowedStatus(),
             'amount' => $amount,
         ];
-    }
-
-    public static function getOvertimeInHours(int $currentDuration) {
-        if ($currentDuration > self::MAX_SCHEDULE_DURATION_IN_HOURS) {
-            return $currentDuration - self::MAX_SCHEDULE_DURATION_IN_HOURS;
-        }
-        return 0;
     }
 }

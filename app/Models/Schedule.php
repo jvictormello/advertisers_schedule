@@ -15,6 +15,8 @@ class Schedule extends Model
     const STATUS_PENDING = 'Pendente';
     const STATUS_IN_PROGRESS = 'Em Andamento';
     const STATUS_FINISHED = 'Finalizado';
+    const MAX_SCHEDULE_DURATION_IN_HOURS = 3;
+    const ZERO_OVERTIME_HOURS = 0;
 
     /**
      * The attributes that are mass assignable.
