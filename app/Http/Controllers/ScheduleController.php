@@ -76,4 +76,21 @@ class ScheduleController extends Controller
             return response()->json(['message' => $exception->getMessage()], $errorCode);
         }
     }
+
+    /**
+     * Store a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        try {
+            $message = $this->scheduleService->createSchedule();
+            return response()->json($message, Response::HTTP_OK);
+        } catch (Exception $exception) {
+            $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['message' => $exception->getMessage()], $errorCode);
+        }
+    }
 }

@@ -83,4 +83,9 @@ class ScheduleService implements ScheduleServiceContract
 
         return $nextAllowedStatus;
     }
+
+    public function createSchedule()
+    {
+        return ['message' => 'hi'];
+    }
 }
