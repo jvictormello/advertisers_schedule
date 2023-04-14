@@ -18,6 +18,6 @@ Route::resource('advertisers', AdvertiserController::class)->only(['index', 'sho
 Route::resource('notifications', NotificationController::class)->only(['index'])->middleware('auth.advertisers');
 
 # ScheduleController
-Route::put('/schedules/{id}', [ScheduleController::class, 'updateStatus'])->middleware('auth.advertisers');
+Route::put('/schedules/{id}/update-status', [ScheduleController::class, 'updateStatus'])->middleware('auth.advertisers');
 Route::resource('schedules', ScheduleController::class)->only(['index'])->middleware('auth.advertisers');
 Route::resource('schedules', ScheduleController::class)->only(['destroy'])->middleware('auth.contractors');

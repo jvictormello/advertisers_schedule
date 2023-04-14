@@ -67,8 +67,8 @@ class ScheduleController extends Controller
     public function updateStatus($id)
     {
         try {
-            $this->scheduleService->updateScheduleStatus($id);
-            return response()->json(['message' => 'Schedule status updated'], Response::HTTP_OK);
+            $newStatus = $this->scheduleService->updateScheduleStatus($id);
+            return response()->json(['message' => 'Schedule status updated to: "'.$newStatus.'"'], Response::HTTP_OK);
         } catch (ModelNotFoundException $exception) {
             return response()->json(['message' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (Exception $exception) {
