@@ -57,4 +57,23 @@ class ScheduleController extends Controller
             return response()->json(['message' => $exception->getMessage()], $errorCode);
         }
     }
+
+    /**
+     * Update schedule status.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatus($id)
+    {
+        try {
+            $newStatus = $this->scheduleService->updateScheduleStatus($id);
+            return response()->json(['message' => 'Schedule status updated to: "'.$newStatus.'"'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (Exception $exception) {
+            $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            return response()->json(['message' => $exception->getMessage()], $errorCode);
+        }
+    }
 }

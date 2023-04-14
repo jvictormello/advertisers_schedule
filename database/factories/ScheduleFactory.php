@@ -28,9 +28,9 @@ class ScheduleFactory extends Factory
         $advertiserId = Advertiser::first()->id;
         $fakeDate = $this->faker->dateTimeBetween('+0 days', '3 days');
         $date = $fakeDate->format('Y-m-d');
-        $startsAt = $fakeDate->format('H:i:s');
+        $startsAt = $fakeDate->format('Y-m-d H:i:s');
         $duration = $this->faker->numberBetween(1, 3);
-        $finishesAt = $fakeDate->modify('+ '.$duration.' hours')->format('H:i:s');
+        $finishesAt = $fakeDate->modify('+ '.$duration.' hours')->format('Y-m-d H:i:s');
         $price = Price::where('advertiser_id', $advertiserId)->first()->amount - (Discount::where('advertiser_id', $advertiserId)->where('hours', $duration)->first()->amount);
 
         return [

@@ -21,11 +21,11 @@ class CreateSchedulesTable extends Migration
             $table->string('contractor_zip_code');
             $table->string('status')->default('Pendente');
             $table->date('date');
-            $table->time('starts_at');
-            $table->time('finishes_at');
+            $table->datetime('starts_at');
+            $table->datetime('finishes_at');
             $table->integer('duration');
-            $table->time('started_at')->nullable();
-            $table->time('finished_at')->nullable();
+            $table->datetime('started_at')->nullable();
+            $table->datetime('finished_at')->nullable();
             $table->float('amount', 8, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
