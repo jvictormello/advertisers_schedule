@@ -113,10 +113,20 @@ class ScheduleService implements ScheduleServiceContract
         $totalOvertime = $overtimePricePerHour * $overtimeInHours;
         $price = $totalPrice - $totalDiscount + $totalOvertime;
         $status = Schedule::STATUS_PENDING;
+        $zipCode = $newScheduleInputs['contractor_zip_code'];
 
         $v1Response = $this->brasilAPIService->searchZipCodeV1($newScheduleInputs['contractor_zip_code']);
         $v2Response = $this->brasilAPIService->searchZipCodeV2($newScheduleInputs['contractor_zip_code']);
 
+        if ($v1Response['cep']) {
+            $zipCode = $v1Response['cep'];
+        } elseif ($v2Response['cep']) {
+            $zipCode = $v1Response['cep'];
+        } else {
+            throw new Exception('Cep not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $newScheduleInputs['contractor_zip_code'] = $zipCode;
         $newScheduleInputs['contractor_id'] = $contractorId;
         $newScheduleInputs['duration'] = $duration;
         $newScheduleInputs['price'] = $price;

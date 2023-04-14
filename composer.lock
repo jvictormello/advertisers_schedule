@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d71712a6c8f2d5088191c398df3a46d9",
+    "content-hash": "e19d47203df88787db145c0f3e5ea9cf",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -57,6 +57,69 @@
                 "stack"
             ],
             "time": "2021-03-11T06:42:03+00:00"
+        },
+        {
+            "name": "atlastechnol/laravel-5.5-circuit-breaker",
+            "version": "0.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atlastechnol/laravel-5.5-circuit-breaker.git",
+                "reference": "960848210144e5c74c111cb5437e621205a9d07a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atlastechnol/laravel-5.5-circuit-breaker/zipball/960848210144e5c74c111cb5437e621205a9d07a",
+                "reference": "960848210144e5c74c111cb5437e621205a9d07a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.5",
+                "phpunit/phpunit": "~7.0",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "atlas\\LaravelCircuitBreaker\\Provider\\CircuitBreakerServiceProvider"
+                    ],
+                    "aliases": {
+                        "CircuitBreaker": "atlas\\LaravelCircuitBreaker\\Facade\\CircuitBreaker"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "atlas\\LaravelCircuitBreaker\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Atlas Technologies",
+                    "email": "atlastechnol@gmail.com",
+                    "homepage": "https://github.com/atlastechnol",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A circuit breaker pattern implementation for the Laravel framework 5.5 based on laravel circuit breaker package https://github.com/francescomalatesta/laravel-circuit-breaker",
+            "homepage": "https://github.com/atlastechnol/laravel-5.5-circuit-breaker",
+            "keywords": [
+                "circuit breaker",
+                "laravel",
+                "package"
+            ],
+            "support": {
+                "issues": "https://github.com/atlastechnol/laravel-5.5-circuit-breaker/issues",
+                "source": "https://github.com/atlastechnol/laravel-5.5-circuit-breaker/tree/0.1.4"
+            },
+            "time": "2022-09-06T16:23:22+00:00"
         },
         {
             "name": "brick/math",
