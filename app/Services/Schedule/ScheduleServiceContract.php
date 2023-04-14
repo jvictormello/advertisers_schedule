@@ -8,4 +8,5 @@ interface ScheduleServiceContract
     public function deleteSchedule(int $scheduleId);
     public function updateScheduleStatus(int $scheduleId);
     public function createSchedule(array $newScheduleInputs);
+    public function generateDailySummary(string $date, string $fieldName, string $fieldValue);
 }

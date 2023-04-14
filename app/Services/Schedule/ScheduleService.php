@@ -2,6 +2,7 @@
 
 namespace App\Services\Schedule;
 
+use App\Console\Commands\DailySummary;
 use App\Jobs\SendCanceledScheduleNotification;
 use App\Models\Schedule;
 use App\Repositories\Advertiser\AdvertiserRepositoryContract;
@@ -133,5 +134,35 @@ class ScheduleService implements ScheduleServiceContract
         $newScheduleInputs['status'] = $status;
 
         return $this->scheduleRepository->store($newScheduleInputs);
+    }
+
+    public function generateDailySummary(string $date, string $fieldName, string $fieldValue)
+    {
+        $advertiser = $this->advertiserRepository->getByAttribute($fieldName, $fieldValue)->firstOrFail();
+
+        $filters = [
+            'status' => Schedule::STATUS_FINISHED,
+            'date' => $date
+        ];
+
+        $schedules = $this->scheduleRepository->allSchedulesByAdvertiserIdAndFilters($advertiser->id, $filters);
+
+        $schedulesQty = 0;
+        $totalHours = 0;
+        $totalAmount = 0;
+
+        foreach ($schedules->get() as $schedule) {
+            $schedulesQty = $schedulesQty + 1;
+            $totalHours = $totalHours + $schedule->duration;
+            $totalAmount = $totalAmount + $schedule->amount;
+        }
+
+        $dailySummary = [
+            DailySummary::SCHEDULES_QUANTITY_KEY => $schedulesQty,
+            DailySummary::TOTAL_HOURS_KEY => $totalHours,
+            DailySummary::TOTAL_AMOUNT_KEY => $totalAmount,
+        ];
+
+        return $dailySummary;
     }
 }

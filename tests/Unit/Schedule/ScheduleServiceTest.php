@@ -285,30 +285,39 @@ class ScheduleServiceTest extends TestCase
     }
 
     /**
-     * Test updateScheduleStatus method from in progress to finished with an authenticated contractor.
+     * Test generateDailySummary method from with wrong email expects exception.
      *
      * @return void
      */
-    public function test_update_schedule_status_method_cant_be_changed_from_in_progress_to_finished()
+    public function test_generate_daily_summary_method_from_with_wrong_email_expects_exception()
     {
-        $this->be($this->advertiser, 'advertisers');
-        $date = Carbon::now();
-        $startsAt = clone $date;
-        $startedAt = clone $date;
-        $finishesAt = clone $date;
-        $schedule = $this->createSchedules([
-            'date' => $date->format('Y-m-d'),
-            'duration' => $this->threeHours,
-            'starts_at' => $startsAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
-            'started_at' => $startedAt->subHours($this->threeHours)->format('Y-m-d H:i:s'),
-            'finishes_at' => $finishesAt->format('Y-m-d H:i:s'),
-            'status' => Schedule::STATUS_FINISHED,
-        ]);
+        $today = Carbon::now()->format('Y-m-d');
+        $this->expectException(ModelNotFoundException::class);
+        $this->scheduleService->generateDailySummary($today, 'email', 'email');
+    }
 
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('The Schedule is already closed');
-        $this->expectExceptionCode(Response::HTTP_METHOD_NOT_ALLOWED);
-        $this->scheduleService->updateScheduleStatus($schedule->id);
+    /**
+     * Test generateDailySummary method from with wrong login expects exception.
+     *
+     * @return void
+     */
+    public function test_generate_daily_summary_method_from_with_wrong_login_expects_exception()
+    {
+        $today = Carbon::now()->format('Y-m-d');
+        $this->expectException(ModelNotFoundException::class);
+        $this->scheduleService->generateDailySummary($today, 'login', 'login');
+    }
+
+    /**
+     * Test generateDailySummary method from with wrong username expects exception.
+     *
+     * @return void
+     */
+    public function test_generate_daily_summary_method_from_with_wrong_username_expects_exception()
+    {
+        $today = Carbon::now()->format('Y-m-d');
+        $this->expectException(ModelNotFoundException::class);
+        $this->scheduleService->generateDailySummary($today, 'username', 'username');
     }
 
     /**

@@ -22,7 +22,7 @@ class PendingStatusChangeStrategy implements ScheduleStatusChangeStrategyContrac
         return false;
     }
 
-        public function getNextAllowedStatus()
+    public function getNextAllowedStatus()
     {
         return Schedule::STATUS_IN_PROGRESS;
     }
