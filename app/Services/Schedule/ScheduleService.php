@@ -61,7 +61,7 @@ class ScheduleService implements ScheduleServiceContract
 
         $currentStatus = $schedule->status;
         if($currentStatus == Schedule::STATUS_FINISHED) {
-            throw new Exception("The Schedule is already closed.", Response::HTTP_METHOD_NOT_ALLOWED);
+            throw new Exception("The Schedule is already closed", Response::HTTP_METHOD_NOT_ALLOWED);
         }
 
         $statusChangeStrategies = [
@@ -73,7 +73,7 @@ class ScheduleService implements ScheduleServiceContract
         $statusCanBeChanged = $statusChangeStrategy->canChangeStatus($schedule);
 
         if (!$statusCanBeChanged) {
-            throw new Exception("The Schedule can't have the status changed yet.", Response::HTTP_METHOD_NOT_ALLOWED);
+            throw new Exception("The Schedule can't have the status changed yet", Response::HTTP_METHOD_NOT_ALLOWED);
         }
 
         $nextAllowedStatus = $statusChangeStrategy->getNextAllowedStatus();
