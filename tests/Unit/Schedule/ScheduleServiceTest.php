@@ -44,13 +44,7 @@ class ScheduleServiceTest extends TestCase
      */
     public function test_get_all_schedules_by_advertiser_method_with_advertiser_info()
     {
-        $credentials = [
-            'login' => $this->advertiser->login,
-            'password' => $this->testPassword
-        ];
-
-        $this->authenticationService->loginAdvertiser($credentials);
-        Auth::guard('advertisers')->attempt($credentials);
+        $this->be($this->advertiser, 'advertisers');
 
         $schedules = $this->scheduleService->getAllSchedulesByAdvertiserAndFilters();
 
@@ -70,13 +64,7 @@ class ScheduleServiceTest extends TestCase
      */
     public function test_get_all_schedules_by_advertiser_method_with_contractor_info()
     {
-        $credentials = [
-            'login' => $this->contractor->login,
-            'password' => $this->testPassword
-        ];
-
-        $this->authenticationService->loginContractor($credentials);
-        Auth::guard('contractors')->attempt($credentials);
+        $this->be($this->contractor, 'contractors');
 
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
