@@ -30,4 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'brasilapi' => [
+        'url' => env('BRASILAPI_URL', 'https://brasilapi.com.br'),
+    ],
+
 ];

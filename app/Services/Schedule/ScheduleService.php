@@ -6,6 +6,7 @@ use App\Jobs\SendCanceledScheduleNotification;
 use App\Models\Schedule;
 use App\Repositories\Advertiser\AdvertiserRepositoryContract;
 use App\Repositories\Schedule\ScheduleRepositoryContract;
+use App\Services\BrasilAPI\BrasilAPIService;
 use App\Services\Notification\NotificationServiceContract;
 use App\Strategies\Schedule\InProgressStatusChangeStrategy;
 use App\Strategies\Schedule\PendingStatusChangeStrategy;
@@ -20,13 +21,17 @@ class ScheduleService implements ScheduleServiceContract
     protected $scheduleRepository;
     protected $notificationService;
     protected $advertiserRepository;
-    private $maxSchedule;
+    protected $brasilAPIService;
 
-    public function __construct(ScheduleRepositoryContract $scheduleRepository, NotificationServiceContract $notificationServiceContract, AdvertiserRepositoryContract $advertiserRepositoryContract)
+    public function __construct(ScheduleRepositoryContract $scheduleRepository,
+        NotificationServiceContract $notificationServiceContract,
+        AdvertiserRepositoryContract $advertiserRepositoryContract,
+        BrasilAPIService $brasilAPIService)
     {
         $this->scheduleRepository = $scheduleRepository;
         $this->notificationService = $notificationServiceContract;
         $this->advertiserRepository = $advertiserRepositoryContract;
+        $this->brasilAPIService = $brasilAPIService;
     }
 
     public function getAllSchedulesByAdvertiserAndFilters(array $filters = [])
@@ -108,6 +113,9 @@ class ScheduleService implements ScheduleServiceContract
         $totalOvertime = $overtimePricePerHour * $overtimeInHours;
         $price = $totalPrice - $totalDiscount + $totalOvertime;
         $status = Schedule::STATUS_PENDING;
+
+        $v1Response = $this->brasilAPIService->searchZipCodeV1($newScheduleInputs['contractor_zip_code']);
+        $v2Response = $this->brasilAPIService->searchZipCodeV2($newScheduleInputs['contractor_zip_code']);
 
         $newScheduleInputs['contractor_id'] = $contractorId;
         $newScheduleInputs['duration'] = $duration;
