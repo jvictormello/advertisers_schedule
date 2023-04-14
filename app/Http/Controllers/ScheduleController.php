@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Schedule;
+use App\Http\Requests\StoreScheduleFormRequest;
 use App\Services\Schedule\ScheduleServiceContract;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Validation\UnauthorizedException;
 
 class ScheduleController extends Controller
@@ -83,9 +82,10 @@ class ScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreScheduleFormRequest $request)
     {
         try {
+            $request->validated();
             $message = $this->scheduleService->createSchedule();
             return response()->json($message, Response::HTTP_OK);
         } catch (Exception $exception) {
