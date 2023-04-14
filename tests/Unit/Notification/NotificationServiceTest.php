@@ -6,7 +6,6 @@ use App\Models\Advertiser;
 use App\Models\Contractor;
 use App\Services\Notification\NotificationServiceContract;
 use Database\Seeders\DatabaseSeeder;
-use Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
