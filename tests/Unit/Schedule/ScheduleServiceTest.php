@@ -6,7 +6,6 @@ use App\Jobs\SendCanceledScheduleNotification;
 use App\Models\Advertiser;
 use App\Models\Contractor;
 use App\Models\Schedule;
-use App\Services\Authentication\AuthenticationServiceContract;
 use App\Services\Schedule\ScheduleServiceContract;
 use Database\Seeders\DatabaseSeeder;
 use Auth;
@@ -21,7 +20,6 @@ class ScheduleServiceTest extends TestCase
     use RefreshDatabase;
 
     private $scheduleService;
-    private $authenticationService;
     private $advertiser;
     private $contractor;
     private $testPassword;
@@ -30,7 +28,6 @@ class ScheduleServiceTest extends TestCase
     {
         parent::setUp();
         $this->scheduleService = app()->make(ScheduleServiceContract::class);
-        $this->authenticationService = app()->make(AuthenticationServiceContract::class);
         $this->seed(DatabaseSeeder::class);
         $this->advertiser = Advertiser::first();
         $this->contractor = Contractor::first();
