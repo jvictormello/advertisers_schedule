@@ -23,7 +23,6 @@ class ScheduleServiceTest extends TestCase
     private $scheduleService;
     private $advertiser;
     private $contractor;
-    private $testPassword;
     private $twoHours;
     private $threeHours;
 
@@ -34,7 +33,6 @@ class ScheduleServiceTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $this->advertiser = Advertiser::first();
         $this->contractor = Contractor::first();
-        $this->testPassword = 'abcd1234';
         $this->twoHours = 2;
         $this->threeHours = 3;
     }
