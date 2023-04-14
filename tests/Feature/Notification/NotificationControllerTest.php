@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
-class ScheduleControllerTest extends TestCase
+class NotificationControllerTest extends TestCase
 {
     use RefreshDatabase;
 
