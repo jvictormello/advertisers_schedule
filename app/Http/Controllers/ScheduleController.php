@@ -86,8 +86,17 @@ class ScheduleController extends Controller
     {
         try {
             $request->validated();
-            $message = $this->scheduleService->createSchedule();
-            return response()->json($message, Response::HTTP_OK);
+            $newScheduleInputs = $request->only('advertiser_id', 'contractor_zip_code', 'date','starts_at', 'finishes_at');
+            $storedSchedule = $this->scheduleService->createSchedule($newScheduleInputs);
+
+            $data = [
+                'data' => $storedSchedule->with('advertiser')->with('contractor')->get(),
+                'message' => 'Schedule created',
+            ];
+
+            return response()->json($data, Response::HTTP_OK);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['message' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (Exception $exception) {
             $errorCode = $exception->getCode() ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
             return response()->json(['message' => $exception->getMessage()], $errorCode);

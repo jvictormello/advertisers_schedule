@@ -4,10 +4,12 @@ namespace App\Services\Schedule;
 
 use App\Jobs\SendCanceledScheduleNotification;
 use App\Models\Schedule;
+use App\Repositories\Advertiser\AdvertiserRepositoryContract;
 use App\Repositories\Schedule\ScheduleRepositoryContract;
 use App\Services\Notification\NotificationServiceContract;
 use App\Strategies\Schedule\InProgressStatusChangeStrategy;
 use App\Strategies\Schedule\PendingStatusChangeStrategy;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
@@ -17,11 +19,14 @@ class ScheduleService implements ScheduleServiceContract
 {
     protected $scheduleRepository;
     protected $notificationService;
+    protected $advertiserRepository;
+    private $maxSchedule;
 
-    public function __construct(ScheduleRepositoryContract $scheduleRepository, NotificationServiceContract $notificationServiceContract)
+    public function __construct(ScheduleRepositoryContract $scheduleRepository, NotificationServiceContract $notificationServiceContract, AdvertiserRepositoryContract $advertiserRepositoryContract)
     {
         $this->scheduleRepository = $scheduleRepository;
         $this->notificationService = $notificationServiceContract;
+        $this->advertiserRepository = $advertiserRepositoryContract;
     }
 
     public function getAllSchedulesByAdvertiserAndFilters(array $filters = [])
@@ -84,8 +89,31 @@ class ScheduleService implements ScheduleServiceContract
         return $nextAllowedStatus;
     }
 
-    public function createSchedule()
+    public function createSchedule(array $newScheduleInputs)
     {
-        return ['message' => 'hi'];
+        if (!Auth::guard('contractors')->check() || !Auth::guard('contractors')->user()) {
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $contractorId = Auth::guard('contractors')->user()->id;
+        $advertiser = $this->advertiserRepository->getById($newScheduleInputs['advertiser_id']);
+        $startsAt = Carbon::createFromFormat('Y-m-d H:i:s', $newScheduleInputs['starts_at']);
+        $finishesAt = Carbon::createFromFormat('Y-m-d H:i:s', $newScheduleInputs['finishes_at']);
+        $duration = $startsAt->diffInHours($finishesAt, true);
+        $totalDiscount = $advertiser->discounts->where('hours', $duration)->first()->amount;
+        $pricePerHour = $advertiser->prices->first()->amount;
+        $totalPrice = $pricePerHour * $duration;
+        $overtimeInHours = $duration > 3 ? $duration - 3 : 0;
+        $overtimePricePerHour = $advertiser->overtimes->first()->amount;
+        $totalOvertime = $overtimePricePerHour * $overtimeInHours;
+        $price = $totalPrice - $totalDiscount + $totalOvertime;
+        $status = Schedule::STATUS_PENDING;
+
+        $newScheduleInputs['contractor_id'] = $contractorId;
+        $newScheduleInputs['duration'] = $duration;
+        $newScheduleInputs['price'] = $price;
+        $newScheduleInputs['status'] = $status;
+
+        return $this->scheduleRepository->store($newScheduleInputs);
     }
 }

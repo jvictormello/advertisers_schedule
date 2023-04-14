@@ -7,5 +7,5 @@ interface ScheduleServiceContract
     public function getAllSchedulesByAdvertiserAndFilters(array $filters = []);
     public function deleteSchedule(int $scheduleId);
     public function updateScheduleStatus(int $scheduleId);
-    public function createSchedule();
+    public function createSchedule(array $newScheduleInputs);
 }
