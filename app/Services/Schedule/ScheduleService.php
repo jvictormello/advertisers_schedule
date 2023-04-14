@@ -49,17 +49,25 @@ class ScheduleService implements ScheduleServiceContract
 
     public function updateScheduleStatus(int $scheduleId)
     {
+        if (!Auth::guard('advertisers')->check() || !Auth::guard('advertisers')->user()) {
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+        $advertiserId = Auth::guard('advertisers')->user()->id;
+
+        $schedule = $this->scheduleRepository->getById($scheduleId);
+        if ($schedule->advertiser_id != $advertiserId) {
+            throw new UnauthorizedException('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $currentStatus = $schedule->status;
+        if($currentStatus == Schedule::STATUS_FINISHED) {
+            throw new Exception("The Schedule is already closed.", Response::HTTP_METHOD_NOT_ALLOWED);
+        }
+
         $statusChangeStrategies = [
             Schedule::STATUS_PENDING => new PendingStatusChangeStrategy(),
             Schedule::STATUS_IN_PROGRESS => new InProgressStatusChangeStrategy(),
         ];
-
-        $schedule = $this->scheduleRepository->getById($scheduleId);
-        $currentStatus = $schedule->status;
-
-        if($currentStatus == Schedule::STATUS_FINISHED) {
-            throw new Exception("The Schedule is already closed.", Response::HTTP_METHOD_NOT_ALLOWED);
-        }
 
         $statusChangeStrategy = $statusChangeStrategies[$currentStatus];
         $statusCanBeChanged = $statusChangeStrategy->canChangeStatus($schedule);
