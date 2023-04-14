@@ -10,6 +10,7 @@ use App\Services\Schedule\ScheduleServiceContract;
 use Carbon\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Validation\UnauthorizedException;
@@ -282,6 +283,7 @@ class ScheduleServiceTest extends TestCase
         $this->expectExceptionCode(Response::HTTP_METHOD_NOT_ALLOWED);
         $this->scheduleService->updateScheduleStatus($schedule->id);
     }
+
     /**
      * Test updateScheduleStatus method from in progress to finished with an authenticated contractor.
      *
@@ -307,5 +309,82 @@ class ScheduleServiceTest extends TestCase
         $this->expectExceptionMessage('The Schedule is already closed');
         $this->expectExceptionCode(Response::HTTP_METHOD_NOT_ALLOWED);
         $this->scheduleService->updateScheduleStatus($schedule->id);
+    }
+
+    /**
+     * Test createSchedule method with an authenticated contractor.
+     *
+     * @return void
+     */
+    public function test_create_schedule_with_an_authenticated_contractor()
+    {
+        $this->be($this->contractor, 'contractors');
+
+        $postBody = [
+            "advertiser_id" => $this->advertiser->id,
+            "contractor_zip_code" => "80420-200",
+            "date" => "2023-04-15",
+            "starts_at" => "2023-04-15 18:00:00",
+            "finishes_at" => "2023-04-15 20:00:00",
+            "contractor_id" => $this->contractor->id,
+            "duration" => 2,
+            "price" => 280.0,
+            "status" => Schedule::STATUS_PENDING,
+        ];
+
+        $this->scheduleService->createSchedule($postBody);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Test createSchedule method with an authenticated advertiser.
+     *
+     * @return void
+     */
+    public function test_create_schedule_with_an_authenticated_advertiser()
+    {
+        $this->be($this->advertiser, 'advertisers');
+
+        $postBody = [
+            "advertiser_id" => $this->advertiser->id,
+            "contractor_zip_code" => "80420-200",
+            "date" => "2023-04-15",
+            "starts_at" => "2023-04-15 18:00:00",
+            "finishes_at" => "2023-04-15 20:00:00",
+            "contractor_id" => $this->contractor->id,
+            "duration" => 2,
+            "price" => 280.0,
+            "status" => Schedule::STATUS_PENDING,
+        ];
+
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('Unauthorized');
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
+        $this->scheduleService->createSchedule($postBody);
+    }
+
+    /**
+     * Test createSchedule method with an authenticated contractor and non existent advertiser.
+     *
+     * @return void
+     */
+    public function test_create_schedule_with_an_authenticated_contractor_and_non_existent_advertiser()
+    {
+        $this->be($this->contractor, 'contractors');
+
+        $postBody = [
+            "advertiser_id" => 99999,
+            "contractor_zip_code" => "80420-200",
+            "date" => "2023-04-15",
+            "starts_at" => "2023-04-15 18:00:00",
+            "finishes_at" => "2023-04-15 20:00:00",
+            "contractor_id" => $this->contractor->id,
+            "duration" => 2,
+            "price" => 280.0,
+            "status" => Schedule::STATUS_PENDING,
+        ];
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->scheduleService->createSchedule($postBody);
     }
 }

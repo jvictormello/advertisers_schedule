@@ -376,4 +376,58 @@ class ScheduleControllerTest extends TestCase
             'X-Requested-With' => 'XMLHttpRequest',
         ])->put('api/schedules/'.$schedule->id.'/update-status')->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
     }
+
+    /**
+     * Test logged contractor tries to create a schedule.
+     *
+     * @return void
+     */
+    public function test_contractor_tries_to_create_schedule()
+    {
+        $jwtToken = 'Bearer '.$this->be($this->contractor, 'contractors')->fakeJwtToken;
+
+        $postBody = [
+            "advertiser_id" => $this->advertiser->id,
+            "contractor_zip_code" => "80420-200",
+            "date" => "2023-04-15",
+            "starts_at" => "2023-04-15 18:00:00",
+            "finishes_at" => "2023-04-15 20:00:00",
+            "contractor_id" => $this->contractor->id,
+            "duration" => 2,
+            "price" => 280.0,
+            "status" => Schedule::STATUS_PENDING,
+        ];
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post('api/schedules', $postBody)->assertStatus(Response::HTTP_OK);
+    }
+
+    /**
+     * Test logged advertiser tries to create a schedule.
+     *
+     * @return void
+     */
+    public function test_advertiser_tries_to_create_schedule()
+    {
+        $jwtToken = 'Bearer '.$this->be($this->advertiser, 'advertisers')->fakeJwtToken;
+
+        $postBody = [
+            "advertiser_id" => $this->advertiser->id,
+            "contractor_zip_code" => "80420-200",
+            "date" => "2023-04-15",
+            "starts_at" => "2023-04-15 18:00:00",
+            "finishes_at" => "2023-04-15 20:00:00",
+            "contractor_id" => $this->contractor->id,
+            "duration" => 2,
+            "price" => 280.0,
+            "status" => Schedule::STATUS_PENDING,
+        ];
+
+        $this->withHeaders([
+            'Authorization' => $jwtToken,
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post('api/schedules', $postBody)->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
 }
