@@ -108,8 +108,9 @@ class ScheduleService implements ScheduleServiceContract
         $duration = $startsAt->diffInHours($finishesAt, true);
         $totalDiscount = $advertiser->discounts->where('hours', $duration)->first()->amount;
         $pricePerHour = $advertiser->prices->first()->amount;
-        $totalPrice = $pricePerHour * $duration;
         $overtimeInHours = $duration > Schedule::MAX_SCHEDULE_DURATION_IN_HOURS ? $duration - Schedule::MAX_SCHEDULE_DURATION_IN_HOURS : Schedule::ZERO_OVERTIME_HOURS;
+        $totalHoursWithoutOvertime = $duration - $overtimeInHours;
+        $totalPrice = $pricePerHour * $totalHoursWithoutOvertime;
         $overtimePricePerHour = $advertiser->overtimes->first()->amount;
         $totalOvertime = $overtimePricePerHour * $overtimeInHours;
         $price = $totalPrice - $totalDiscount + $totalOvertime;
