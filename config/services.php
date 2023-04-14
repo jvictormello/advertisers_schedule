@@ -31,7 +31,7 @@ return [
     ],
 
     'brasilapi' => [
-        'url' => env('BRASILAPI_URL', 'https://brasilapi.com.br'),
+        'url' => 'https://brasilapi.com.br',
     ],
 
 ];
